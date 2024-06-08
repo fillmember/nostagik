@@ -45,4 +45,4 @@ Thumbs.db
 .next
 out
 
-.env.local
+apps/nostagik-site/.env.local
