@@ -36,8 +36,16 @@ import {
 } from './types';
 import { richTextToString } from './utils';
 
-function blockClsx(block: { type: string }, ...others: clsx.ClassValue[]) {
-  return clsx(`nk-${block.type}`, ...others);
+function blockClsx(
+  ctx: RendererContext,
+  block: { type: string },
+  ...others: clsx.ClassValue[]
+) {
+  return clsx(
+    `${ctx.config.notionBlockClasses.prefix}${block.type}`,
+    ctx.config.notionBlockClasses.map[block.type],
+    ...others
+  );
 }
 
 export function Icon({
@@ -67,28 +75,30 @@ export function Icon({
   }
 }
 
-function notionColorToClassNames(input = '', defaultClassNames = '') {
-  const _map: Record<string, string> = {
-    default: '',
-    blue: 'nk-blue text-blue-700',
-    blue_background: 'nk-blue_background bg-blue-100',
-    brown: 'nk-brown text-brown-700',
-    brown_background: 'nk-brown_background bg-brown-100',
-    gray: 'nk-gray text-gray-700',
-    gray_background: 'nk-gray_background bg-gray-100',
-    green: 'nk-green text-green-700',
-    green_background: 'nk-green_background bg-green-100',
-    orange: 'nk-orange text-orange-700',
-    orange_background: 'nk-orange_background bg-orange-100',
-    pink: 'nk-pink text-pink-700',
-    pink_background: 'nk-pink_background bg-pink-100',
-    purple: 'nk-purple text-purple-700',
-    purple_background: 'nk-purple_background bg-purple-100',
-    red: 'nk-red text-red-700',
-    red_background: 'nk-red_background bg-red-100',
-    yellow: 'nk-yellow text-yellow-700',
-    yellow_background: 'nk-yellow_background bg-yellow-100',
-  };
+function notionAnnotationToClassNames(
+  ctx: RendererContext,
+  annotations: RichTextItemResponse['annotations']
+) {
+  return Object.keys(annotations)
+    .map((str) => {
+      const key = str as keyof typeof annotations;
+      if (key === 'color') {
+        return notionColorToClassNames(ctx, annotations.color);
+      }
+      const value = annotations[key];
+      if (value) {
+        return ctx.config.notionAnnotationsClasses[key];
+      }
+    })
+    .join(' ');
+}
+
+function notionColorToClassNames(
+  ctx: RendererContext,
+  input = '',
+  defaultClassNames = ''
+) {
+  const _map = ctx.config.notionAnnotationsClasses.color;
   const result = clsx(
     input
       .split(' ')
@@ -106,23 +116,21 @@ export function createHeadingRenderer<
 >({
   key,
   element,
-  className,
 }: {
   key: 'heading_1' | 'heading_2' | 'heading_3';
   element: keyof HTMLElementTagNameMap;
-  className: string;
 }) {
-  return function HeadingRenderer(block: T) {
+  return function HeadingRenderer(block: T, ctx: RendererContext) {
     const { color, is_toggleable, rich_text } = get(
       block,
       key
     ) as Heading1BlockObjectResponse['heading_1'];
     const clsHeading = blockClsx(
+      ctx,
       block,
-      className,
-      notionColorToClassNames(color, 'text-stone-700')
+      notionColorToClassNames(ctx, color, 'text-stone-700')
     );
-    const headingContent = renderBlocks(rich_text);
+    const headingContent = _renderBlocks(rich_text, ctx);
     if (!is_toggleable) {
       return createElement(
         element,
@@ -136,7 +144,7 @@ export function createHeadingRenderer<
       return (
         <details>
           <summary className={clsHeading}>{headingContent}</summary>
-          <div className="ml-4">{renderBlocks(block.children)}</div>
+          <div className="ml-4">{_renderBlocks(block.children, ctx)}</div>
         </details>
       );
     }
@@ -144,38 +152,56 @@ export function createHeadingRenderer<
 }
 
 export const renderers = {
-  bookmark: function BookmarkBlock(block: BookmarkBlockObjectResponse) {
+  bookmark: function BookmarkBlock(
+    block: BookmarkBlockObjectResponse,
+    ctx: RendererContext
+  ) {
     return (
-      <a className={blockClsx(block, 'link')} href={block.bookmark.url}>
+      <a
+        className={blockClsx(
+          ctx,
+          block,
+          ctx.config.notionBlockClasses.map['link']
+        )}
+        href={block.bookmark.url}
+      >
         {block.bookmark.url}
       </a>
     );
   },
-  bulleted_list: function BulletedListBlock(block: ListBlockType) {
+  bulleted_list: function BulletedListBlock(
+    block: ListBlockType,
+    ctx: RendererContext
+  ) {
     return (
-      <ul className={blockClsx(block, 'list-disc ml-6 my-2')}>
-        {renderBlocks(block.children)}
+      <ul className={blockClsx(ctx, block, 'list-disc ml-6 my-2')}>
+        {_renderBlocks(block.children, ctx)}
       </ul>
     );
   },
   bulleted_list_item: function BulletedListItemBlock(
-    block: WithChildren<BulletedListItemBlockObjectResponse>
+    block: WithChildren<BulletedListItemBlockObjectResponse>,
+    ctx: RendererContext
   ) {
     return (
-      <li className={blockClsx(block)}>
-        {renderBlocks(block.bulleted_list_item.rich_text)}
-        {renderBlocks(block.children)}
+      <li className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.bulleted_list_item.rich_text, ctx)}
+        {_renderBlocks(block.children, ctx)}
       </li>
     );
   },
-  callout: function CalloutBlock(block: CalloutBlockObjectResponse) {
-    const children = renderBlocks(block.callout.rich_text);
+  callout: function CalloutBlock(
+    block: CalloutBlockObjectResponse,
+    ctx: RendererContext
+  ) {
+    const children = _renderBlocks(block.callout.rich_text, ctx);
     return (
       <div
         className={blockClsx(
+          ctx,
           block,
           'flex items-center gap-4 p-4',
-          notionColorToClassNames(block.callout.color)
+          notionColorToClassNames(ctx, block.callout.color)
         )}
       >
         <Icon icon={block.callout.icon} className="text-xl" />
@@ -184,74 +210,84 @@ export const renderers = {
     );
   },
   child_page: function ChildPageBlock(
-    block: ChildPageBlockObjectResponse & { slug: string }
+    block: ChildPageBlockObjectResponse & { slug: string },
+    ctx: RendererContext
   ) {
     return (
-      <a className={blockClsx(block, 'block link')} href={block.slug}>
+      <a
+        className={blockClsx(
+          ctx,
+          block,
+          ctx.config.notionBlockClasses.map['link']
+        )}
+        href={block.slug}
+      >
         {block.child_page.title}
       </a>
     );
   },
-  code: function CodeBlock(block: CodeBlockObjectResponse) {
+  code: function CodeBlock(
+    block: CodeBlockObjectResponse,
+    ctx: RendererContext
+  ) {
     return (
-      <div className={blockClsx(block, 'p-4 text-sm bg-gray-100')}>
+      <div className={blockClsx(ctx, block, 'p-4 text-sm bg-gray-100')}>
         <pre>
           <code
             data-language={block.code?.language}
             className={block.code?.language}
           >
-            {renderBlocks(block.code?.rich_text)}
+            {_renderBlocks(block.code?.rich_text, ctx)}
           </code>
         </pre>
-        <legend>{renderBlocks(block.code?.caption)}</legend>
+        <legend>{_renderBlocks(block.code?.caption, ctx)}</legend>
       </div>
     );
   },
-  column: function ColumnBlock(block: WithChildren<ColumnBlockObjectResponse>) {
+  column: function ColumnBlock(
+    block: WithChildren<ColumnBlockObjectResponse>,
+    ctx: RendererContext
+  ) {
     return (
-      <div className={blockClsx(block, 'flex-1')}>
-        {renderBlocks(block.children)}
+      <div className={blockClsx(ctx, block, 'flex-1')}>
+        {_renderBlocks(block.children, ctx)}
       </div>
     );
   },
   column_list: function ColumnListBlock(
-    block: WithChildren<ColumnListBlockObjectResponse>
+    block: WithChildren<ColumnListBlockObjectResponse>,
+    ctx: RendererContext
   ) {
     return (
-      <section className={blockClsx(block, 'flex gap-8 my-4')}>
-        {renderBlocks(block.children)}
+      <section className={blockClsx(ctx, block, 'flex gap-8 my-4')}>
+        {_renderBlocks(block.children, ctx)}
       </section>
     );
   },
-  divider: function DividerBlock(block: DividerBlockObjectResponse) {
-    return <hr className={blockClsx(block, 'border-t my-12')} />;
+  divider: function DividerBlock(
+    block: DividerBlockObjectResponse,
+    ctx: RendererContext
+  ) {
+    return <hr className={blockClsx(ctx, block, 'border-t my-12')} />;
   },
-  heading_1: createHeadingRenderer({
-    key: 'heading_1',
-    element: 'h2',
-    className: 'text-3xl font-bold mb-6',
-  }),
-  heading_2: createHeadingRenderer({
-    key: 'heading_2',
-    element: 'h3',
-    className: 'text-2xl font-bold mb-4',
-  }),
-  heading_3: createHeadingRenderer({
-    key: 'heading_3',
-    element: 'h4',
-    className: 'text-lg font-bold mb-2',
-  }),
-  image: function ImageBlock(block: LocalImageBlockType) {
+  heading_1: createHeadingRenderer({ key: 'heading_1', element: 'h2' }),
+  heading_2: createHeadingRenderer({ key: 'heading_2', element: 'h3' }),
+  heading_3: createHeadingRenderer({ key: 'heading_3', element: 'h4' }),
+  image: function ImageBlock(block: LocalImageBlockType, ctx: RendererContext) {
     const src = block.image.url;
     const {
       dimensions: { width = 0, height = 0 },
       caption,
     } = block.image;
-    const captionElement = renderBlocks(caption);
+    const captionElement = _renderBlocks(caption, ctx);
     const alt = richTextToString(caption);
     return (
       <figure
-        className={blockClsx(block, width / height > 3.5 && 'full page-layout')}
+        className={blockClsx(
+          ctx,
+          block,
+          width / height > 3.5 && 'full page-layout'
+        )}
       >
         <img
           alt={alt}
@@ -268,19 +304,18 @@ export const renderers = {
       </figure>
     );
   },
-  mention: function MentionBlock(block: MentionRichTextItemResponse) {
-    const { annotations } = block;
+  mention: function MentionBlock(
+    block: MentionRichTextItemResponse,
+    ctx: RendererContext
+  ) {
     const { type } = block.mention;
     if (type === 'user') {
       return (
         <span
           className={blockClsx(
+            ctx,
             block,
-            annotations.bold && 'font-bold',
-            annotations.italic && 'italic',
-            annotations.strikethrough && 'line-through',
-            annotations.underline && 'underline',
-            notionColorToClassNames(annotations.color) || 'text-gray-500'
+            notionAnnotationToClassNames(ctx, block.annotations)
           )}
         >
           {block.plain_text}
@@ -290,7 +325,11 @@ export const renderers = {
     if (type === 'page' && block.href !== null) {
       return (
         <a
-          className={blockClsx(block, 'link')}
+          className={blockClsx(
+            ctx,
+            block,
+            ctx.config.notionBlockClasses.map['link']
+          )}
           href={block.mention.page.id.replace(/-/g, '')}
         >
           {block.plain_text}
@@ -299,41 +338,54 @@ export const renderers = {
     }
     return null;
   },
-  numbered_list: function NumberedListBlock(block: ListBlockType) {
+  numbered_list: function NumberedListBlock(
+    block: ListBlockType,
+    ctx: RendererContext
+  ) {
     return (
-      <ol className={blockClsx(block, 'list-decimal ml-6 my-2')}>
-        {renderBlocks(block.children)}
+      <ol className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.children, ctx)}
       </ol>
     );
   },
   numbered_list_item: function NumberedListItemBlock(
-    block: WithChildren<NumberedListItemBlockObjectResponse>
+    block: WithChildren<NumberedListItemBlockObjectResponse>,
+    ctx: RendererContext
   ) {
     return (
-      <li className={blockClsx(block, 'list-decimal')}>
-        {renderBlocks(block.numbered_list_item.rich_text)}
-        {renderBlocks(block.children)}
+      <li className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.numbered_list_item.rich_text, ctx)}
+        {_renderBlocks(block.children, ctx)}
       </li>
     );
   },
-  paragraph: function ParagraphBlock(block: ParagraphBlockObjectResponse) {
+  paragraph: function ParagraphBlock(
+    block: ParagraphBlockObjectResponse,
+    ctx: RendererContext
+  ) {
     return (
-      <p className={blockClsx(block, 'max-w-3xl')}>
-        {renderBlocks(block.paragraph.rich_text)}
+      <p className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.paragraph.rich_text, ctx)}
       </p>
     );
   },
-  quote: function QuoteBlock(block: QuoteBlockObjectResponse) {
+  quote: function QuoteBlock(
+    block: QuoteBlockObjectResponse,
+    ctx: RendererContext
+  ) {
     return (
-      <blockquote className={blockClsx(block, 'p-4 border bg-gray-50')}>
-        {renderBlocks(block.quote.rich_text)}
+      <blockquote className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.quote.rich_text, ctx)}
       </blockquote>
     );
   },
-  table: function TableBlock(block: WithChildren<TableBlockObjectResponse>) {
+  table: function TableBlock(
+    block: WithChildren<TableBlockObjectResponse>,
+    ctx: RendererContext
+  ) {
     return (
-      <table className={blockClsx(block)}>
-        {renderBlocks(block.children, { parent: block })}
+      <table className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.children, { ...ctx, parent: block })}
       </table>
     );
   },
@@ -346,11 +398,11 @@ export const renderers = {
     const rowIndex = parent?.children.indexOf(block);
     const isRowHeader = parent?.table.has_row_header && rowIndex === 0;
     const rowElement = (
-      <tr className={blockClsx(block)}>
+      <tr className={blockClsx(ctx, block)}>
         {cells.map((cell, cellIndex) => {
           const isColumnHeader =
             parent.table.has_column_header && cellIndex === 0;
-          const children = renderBlocks(cell);
+          const children = _renderBlocks(cell, ctx);
           return createElement(
             isRowHeader || isColumnHeader ? 'th' : 'td',
             {},
@@ -361,7 +413,7 @@ export const renderers = {
     );
     return rowElement;
   },
-  text: function TextBlock(block: RichTextItemResponse) {
+  text: function TextBlock(block: RichTextItemResponse, ctx: RendererContext) {
     const content = block.plain_text
       .split('\n')
       .map((str: string, index: number, arr: string[]) => (
@@ -371,69 +423,62 @@ export const renderers = {
         </Fragment>
       ));
     const { href, annotations } = block;
+    const clsAnnotation = notionAnnotationToClassNames(ctx, annotations);
+    const clsBlock = blockClsx(ctx, block, clsAnnotation);
     if (href) {
       return (
-        <a className={blockClsx(block, 'link')} href={href}>
+        <a
+          className={clsx(clsBlock, ctx.config.notionBlockClasses.map['link'])}
+          href={href}
+        >
           {content}
         </a>
       );
     }
     if (annotations.code) {
-      return (
-        <code className={blockClsx(block, 'nk-inline-code', 'text-slate-600')}>
-          {content}
-        </code>
-      );
+      return <code className={clsBlock}>{content}</code>;
     }
-    return (
-      <span
-        className={blockClsx(
-          block,
-          annotations.bold && 'nk-text-bold font-bold',
-          annotations.italic && 'nk-text-italic italic',
-          annotations.strikethrough && 'nk-text-strikethrough line-through',
-          annotations.underline && 'nk-text-underline underline',
-          notionColorToClassNames(annotations.color)
-        )}
-      >
-        {content}
-      </span>
-    );
+    return <span className={clsBlock}>{content}</span>;
   },
-  to_do_list: function ToDoListBlock(block: ListBlockType) {
+  to_do_list: function ToDoListBlock(
+    block: ListBlockType,
+    ctx: RendererContext
+  ) {
     return (
-      <ul className={blockClsx(block, 'my-2 space-y-2')}>
-        {renderBlocks(block.children)}
+      <ul className={blockClsx(ctx, block)}>
+        {_renderBlocks(block.children, ctx)}
       </ul>
     );
   },
-  to_do: function ToDoBlock(block: ToDoBlockObjectResponse) {
+  to_do: function ToDoBlock(
+    block: ToDoBlockObjectResponse,
+    ctx: RendererContext
+  ) {
     const { color, checked, rich_text } = block.to_do;
     return (
       <li
-        className={blockClsx(
-          block,
-          'list-none flex gap-2',
-          notionColorToClassNames(color)
-        )}
+        className={blockClsx(ctx, block, notionColorToClassNames(ctx, color))}
         data-checked={checked}
       >
         <input
           type="checkbox"
-          className="w-[1em] h-[1em] transform translate-y-[0.25em]"
+          className={defineBlockClass(ctx, 'to_do__checkbox')}
           checked={checked}
           readOnly
         />
-        <div>{renderBlocks(rich_text)}</div>
+        <div>{_renderBlocks(rich_text, ctx)}</div>
       </li>
     );
   },
-  toggle: function ToggleBlock(block: WithChildren<ToggleBlockObjectResponse>) {
+  toggle: function ToggleBlock(
+    block: WithChildren<ToggleBlockObjectResponse>,
+    ctx: RendererContext
+  ) {
     return (
-      <details className={blockClsx(block)}>
-        <summary>{renderBlocks(block.toggle.rich_text)}</summary>
-        <div className="nk-toggle-children ml-[1.25rem] mt-1">
-          {renderBlocks(block.children)}
+      <details className={blockClsx(ctx, block)}>
+        <summary>{_renderBlocks(block.toggle.rich_text, ctx)}</summary>
+        <div className={defineBlockClass(ctx, 'toggle__children')}>
+          {_renderBlocks(block.children, ctx)}
         </div>
       </details>
     );
@@ -469,12 +514,78 @@ function unimplementedBlockRenderer(
   );
 }
 
-type RendererContext = { parent: LocalBlockType };
+export type RenderBlockConfig = {
+  notionBlockClasses: {
+    prefix: string;
+    map: Record<string, string>;
+  };
+  notionAnnotationsClasses: {
+    bold: string;
+    italic: string;
+    strikethrough: string;
+    underline: string;
+    code: string;
+    color: Record<string, string>;
+  };
+};
 
-export function renderBlocks(
-  blocks: any[] = [],
-  ctx?: RendererContext
-): ReactNode {
+function defineBlockClass(ctx: RendererContext, name: string): string {
+  const objectClass = `${ctx.config.notionBlockClasses.prefix}${name}`;
+  return clsx(objectClass, ctx.config.notionBlockClasses.map[name]);
+}
+
+const defaultRenderConfig: RenderBlockConfig = {
+  notionBlockClasses: {
+    prefix: 'nk-',
+    map: {
+      heading_1: 'text-3xl font-bold mb-6',
+      heading_2: 'text-2xl font-bold mb-4',
+      heading_3: 'text-lg font-bold mb-2',
+      link: 'underline decoration-stone-300 hover:decoration-sky-300 text-stone-600 hover:text-sky-600',
+      quote: 'p-4 border bg-gray-50',
+      // lists
+      numbered_list: 'list-decimal ml-6 my-2',
+      to_do_list: 'my-2 space-y-2',
+      to_do: 'list-none flex gap-2',
+      to_do__checkbox: 'w-[1em] h-[1em] transform translate-y-[0.25em]',
+      toggle__children: 'ml-[1.25rem] mt-1',
+    },
+  },
+  notionAnnotationsClasses: {
+    bold: 'nk-text-bold font-bold',
+    italic: 'nk-text-italic italic',
+    strikethrough: 'nk-text-strikethrough line-through',
+    underline: 'nk-text-underline underline',
+    code: 'nk-inline-code',
+    color: {
+      blue: 'nk-blue text-blue-700',
+      blue_background: 'nk-blue_background bg-blue-100',
+      brown: 'nk-brown text-brown-700',
+      brown_background: 'nk-brown_background bg-brown-100',
+      gray: 'nk-gray text-gray-700',
+      gray_background: 'nk-gray_background bg-gray-100',
+      green: 'nk-green text-green-700',
+      green_background: 'nk-green_background bg-green-100',
+      orange: 'nk-orange text-orange-700',
+      orange_background: 'nk-orange_background bg-orange-100',
+      pink: 'nk-pink text-pink-700',
+      pink_background: 'nk-pink_background bg-pink-100',
+      purple: 'nk-purple text-purple-700',
+      purple_background: 'nk-purple_background bg-purple-100',
+      red: 'nk-red text-red-700',
+      red_background: 'nk-red_background bg-red-100',
+      yellow: 'nk-yellow text-yellow-700',
+      yellow_background: 'nk-yellow_background bg-yellow-100',
+    },
+  },
+};
+
+type RendererContext = {
+  parent?: LocalBlockType;
+  config: RenderBlockConfig;
+};
+
+function _renderBlocks(blocks: any[] = [], ctx: RendererContext): ReactNode {
   return blocks.map((block) => {
     if (block === null) {
       return null;
@@ -486,4 +597,16 @@ export function renderBlocks(
     if (result === null) return null;
     return cloneElement(result, { key: block.id });
   });
+}
+
+export function renderBlocks(
+  blocks: LocalBlockType[],
+  config: Partial<RenderBlockConfig> = {}
+) {
+  const mergedConfig = Object.assign(
+    {},
+    defaultRenderConfig,
+    config
+  ) as RenderBlockConfig;
+  return _renderBlocks(blocks, { config: mergedConfig });
 }

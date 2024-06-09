@@ -26,6 +26,6 @@ export const getNotionPage = async (
 
 export { listStoredPages } from './source-local-data';
 
-export { renderBlocks } from './render';
+export { renderBlocks, type RenderBlockConfig } from './render';
 
 export * from './types';

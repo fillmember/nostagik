@@ -33,10 +33,6 @@
   @apply mb-6 overflow-hidden bg-cover bg-center;
 }
 
-.link {
-  @apply underline decoration-stone-300 hover:decoration-sky-300 text-stone-600 hover:text-sky-600;
-}
-
 /* Nostagik Classes */
 
 .nk-table {
