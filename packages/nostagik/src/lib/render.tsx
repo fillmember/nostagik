@@ -89,23 +89,22 @@ function notionAnnotationToClassNames(
       if (value) {
         return ctx.config.notionAnnotationsClasses[key];
       }
+      return '';
     })
     .join(' ');
 }
 
-function notionColorToClassNames(
-  ctx: RendererContext,
-  input = '',
-  defaultClassNames = ''
-) {
-  const _map = ctx.config.notionAnnotationsClasses.color;
+function notionColorToClassNames(ctx: RendererContext, input = '') {
+  const inputArr = input.split(' ');
   const result = clsx(
-    input
-      .split(' ')
-      .map((item) => _map[item])
+    inputArr.map(
+      (item) => `${ctx.config.notionBlockClasses.prefix}annotation-${item}`
+    ),
+    inputArr
+      .map((item) => ctx.config.notionAnnotationsClasses.color[item])
       .filter(Boolean)
   );
-  return result || defaultClassNames;
+  return result;
 }
 
 export function createHeadingRenderer<
@@ -128,7 +127,8 @@ export function createHeadingRenderer<
     const clsHeading = blockClsx(
       ctx,
       block,
-      notionColorToClassNames(ctx, color, 'text-stone-700')
+      defineBlockClass(ctx, 'heading'),
+      notionColorToClassNames(ctx, color)
     );
     const headingContent = _renderBlocks(rich_text, ctx);
     if (!is_toggleable) {
@@ -144,7 +144,14 @@ export function createHeadingRenderer<
       return (
         <details>
           <summary className={clsHeading}>{headingContent}</summary>
-          <div className="ml-4">{_renderBlocks(block.children, ctx)}</div>
+          <div
+            className={clsx(
+              defineBlockClass(ctx, `heading__toggle_children`),
+              defineBlockClass(ctx, `${key}__toggle_children`)
+            )}
+          >
+            {_renderBlocks(block.children, ctx)}
+          </div>
         </details>
       );
     }
@@ -174,7 +181,7 @@ export const renderers = {
     ctx: RendererContext
   ) {
     return (
-      <ul className={blockClsx(ctx, block, 'list-disc ml-6 my-2')}>
+      <ul className={blockClsx(ctx, block)}>
         {_renderBlocks(block.children, ctx)}
       </ul>
     );
@@ -200,11 +207,13 @@ export const renderers = {
         className={blockClsx(
           ctx,
           block,
-          'flex items-center gap-4 p-4',
           notionColorToClassNames(ctx, block.callout.color)
         )}
       >
-        <Icon icon={block.callout.icon} className="text-xl" />
+        <Icon
+          icon={block.callout.icon}
+          className={defineBlockClass(ctx, 'callout__icon')}
+        />
         <div>{children}</div>
       </div>
     );
@@ -231,7 +240,7 @@ export const renderers = {
     ctx: RendererContext
   ) {
     return (
-      <div className={blockClsx(ctx, block, 'p-4 text-sm bg-gray-100')}>
+      <div className={blockClsx(ctx, block)}>
         <pre>
           <code
             data-language={block.code?.language}
@@ -249,7 +258,7 @@ export const renderers = {
     ctx: RendererContext
   ) {
     return (
-      <div className={blockClsx(ctx, block, 'flex-1')}>
+      <div className={blockClsx(ctx, block)}>
         {_renderBlocks(block.children, ctx)}
       </div>
     );
@@ -259,7 +268,7 @@ export const renderers = {
     ctx: RendererContext
   ) {
     return (
-      <section className={blockClsx(ctx, block, 'flex gap-8 my-4')}>
+      <section className={blockClsx(ctx, block)}>
         {_renderBlocks(block.children, ctx)}
       </section>
     );
@@ -268,7 +277,7 @@ export const renderers = {
     block: DividerBlockObjectResponse,
     ctx: RendererContext
   ) {
-    return <hr className={blockClsx(ctx, block, 'border-t my-12')} />;
+    return <hr className={blockClsx(ctx, block)} />;
   },
   heading_1: createHeadingRenderer({ key: 'heading_1', element: 'h2' }),
   heading_2: createHeadingRenderer({ key: 'heading_2', element: 'h3' }),
@@ -281,12 +290,14 @@ export const renderers = {
     } = block.image;
     const captionElement = _renderBlocks(caption, ctx);
     const alt = richTextToString(caption);
+    const { fullWidthImageCondition } = ctx.config;
     return (
       <figure
         className={blockClsx(
           ctx,
           block,
-          width / height > 3.5 && 'full page-layout'
+          fullWidthImageCondition(block) &&
+            defineBlockClass(ctx, 'image_full_width')
         )}
       >
         <img
@@ -294,10 +305,10 @@ export const renderers = {
           src={src}
           width={width}
           height={height}
-          className="full"
+          className={defineBlockClass(ctx, 'image_img')}
         />
         {captionElement && (
-          <figcaption className="text-sm text-stone-600 mt-2 mb-4">
+          <figcaption className={defineBlockClass(ctx, 'image__caption')}>
             {captionElement}
           </figcaption>
         )}
@@ -492,26 +503,34 @@ function unimplementedBlockRenderer(
   const isDev = process.env['NODE_ENV'] === 'development';
   if (!isDev) return null;
   return (
-    <div className="bg-pink-100 p-2 overflow-auto text-red-600 text-sm space-y-2">
+    <div className="bg-pink-100 p-4 border border-red-200 overflow-auto text-red-600 text-sm space-y-2">
       <h4 className="font-bold">
         No Renderer found for block with type <code>`{block.type}`</code>
       </h4>
-      <pre className="text-orange-100 bg-red-950 p-2 -mx-2">
-        <code>{JSON.stringify(block, null, 2)}</code>
-      </pre>
+      <details>
+        <summary>block data</summary>
+        <pre className="text-orange-100 bg-red-950 p-2 -mx-2">
+          <code>{JSON.stringify(block, null, 2)}</code>
+        </pre>
+      </details>
       {ctx && (
-        <>
-          <h5>renderer context:</h5>
+        <details>
+          <summary>render context</summary>
           <pre className="text-orange-100 bg-red-950 p-2 -mx-2">
             <code>{JSON.stringify(ctx, null, 2)}</code>
           </pre>
-        </>
+        </details>
       )}
       <span className="block text-right">
         this is only visible in development mode
       </span>
     </div>
   );
+}
+
+function defineBlockClass(ctx: RendererContext, name: string): string {
+  const objectClass = `${ctx.config.notionBlockClasses.prefix}${name}`;
+  return clsx(objectClass, ctx.config.notionBlockClasses.map[name]);
 }
 
 export type RenderBlockConfig = {
@@ -527,28 +546,47 @@ export type RenderBlockConfig = {
     code: string;
     color: Record<string, string>;
   };
+  fullWidthImageCondition: (block: LocalImageBlockType) => boolean;
 };
 
-function defineBlockClass(ctx: RendererContext, name: string): string {
-  const objectClass = `${ctx.config.notionBlockClasses.prefix}${name}`;
-  return clsx(objectClass, ctx.config.notionBlockClasses.map[name]);
-}
-
-const defaultRenderConfig: RenderBlockConfig = {
+export const defaultRenderConfig: RenderBlockConfig = {
   notionBlockClasses: {
     prefix: 'nk-',
     map: {
+      paragraph: 'text-slate-700',
+      // headings
+      heading: 'text-slate-800',
       heading_1: 'text-3xl font-bold mb-6',
       heading_2: 'text-2xl font-bold mb-4',
       heading_3: 'text-lg font-bold mb-2',
-      link: 'underline decoration-stone-300 hover:decoration-sky-300 text-stone-600 hover:text-sky-600',
-      quote: 'p-4 border bg-gray-50',
+      // heading toggle blocks
+      heading__toggle_children: 'mt-2 mb-8',
+      heading_1__toggle_children: 'ml-8',
+      heading_2__toggle_children: 'ml-7',
+      heading_3__toggle_children: 'ml-5',
+      // image
+      image: '',
+      image_img: 'full',
+      image__caption: 'text-sm text-stone-600 mt-2 mb-4',
+      image_full_width: 'full page-layout',
+      // column
+      column_list: 'flex gap-8 my-4',
+      column: 'flex-1',
       // lists
+      bulleted_list: 'list-disc ml-6 my-2',
       numbered_list: 'list-decimal ml-6 my-2',
       to_do_list: 'my-2 space-y-2',
       to_do: 'list-none flex gap-2',
       to_do__checkbox: 'w-[1em] h-[1em] transform translate-y-[0.25em]',
+      // toggle blocks
       toggle__children: 'ml-[1.25rem] mt-1',
+      // others
+      link: 'underline decoration-stone-300 hover:decoration-sky-300 text-stone-600 hover:text-sky-600',
+      quote: 'p-4 border bg-gray-50',
+      callout: 'flex items-center gap-4 p-4',
+      callout__icon: 'text-xl',
+      code: 'p-4 text-sm bg-gray-100',
+      divider: 'border-t my-12',
     },
   },
   notionAnnotationsClasses: {
@@ -556,7 +594,7 @@ const defaultRenderConfig: RenderBlockConfig = {
     italic: 'nk-text-italic italic',
     strikethrough: 'nk-text-strikethrough line-through',
     underline: 'nk-text-underline underline',
-    code: 'nk-inline-code',
+    code: 'nk-inline-code font-mono text-slate-700',
     color: {
       blue: 'nk-blue text-blue-700',
       blue_background: 'nk-blue_background bg-blue-100',
@@ -577,6 +615,10 @@ const defaultRenderConfig: RenderBlockConfig = {
       yellow: 'nk-yellow text-yellow-700',
       yellow_background: 'nk-yellow_background bg-yellow-100',
     },
+  },
+  fullWidthImageCondition: (block) => {
+    const { width = 0, height = 0 } = block.image.dimensions;
+    return width / height > 3;
   },
 };
 
@@ -599,14 +641,15 @@ function _renderBlocks(blocks: any[] = [], ctx: RendererContext): ReactNode {
   });
 }
 
+export function resolveConfig(
+  config: Partial<RenderBlockConfig>
+): RenderBlockConfig {
+  return Object.assign({}, defaultRenderConfig, config) as RenderBlockConfig;
+}
+
 export function renderBlocks(
   blocks: LocalBlockType[],
   config: Partial<RenderBlockConfig> = {}
 ) {
-  const mergedConfig = Object.assign(
-    {},
-    defaultRenderConfig,
-    config
-  ) as RenderBlockConfig;
-  return _renderBlocks(blocks, { config: mergedConfig });
+  return _renderBlocks(blocks, { config: resolveConfig(config) });
 }

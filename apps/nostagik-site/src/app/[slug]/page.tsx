@@ -2,6 +2,7 @@ import { forEach } from 'lodash';
 import { notFound, redirect } from 'next/navigation';
 import { getNotionPage, listStoredPages, type NotionPageData } from 'nostagik';
 import NotionPageComponent from '../../components/NotionPage';
+import { renderConfig } from '../../components/renderConfig';
 
 type Props = { params: { slug: string } };
 
@@ -24,7 +25,7 @@ export default async function NotionPage({ params: { slug } }: Props) {
       {...props}
       slotBeforePageTitle={
         <nav className="mt-8 -mb-4">
-          <a className="link" href="/">
+          <a className={renderConfig.notionBlockClasses.map['link']} href="/">
             back to home
           </a>
         </nav>

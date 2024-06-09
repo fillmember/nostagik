@@ -1,3 +1,3 @@
-import { type RenderBlockConfig } from 'nostagik';
+import { type RenderBlockConfig, resolveConfig } from 'nostagik';
 
-export const renderConfig: Partial<RenderBlockConfig> = {};
+export const renderConfig: RenderBlockConfig = resolveConfig({});
