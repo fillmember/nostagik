@@ -26,6 +26,7 @@ import {
   ToDoBlockObjectResponse,
   ToggleBlockObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
+import slugify from 'slugify';
 import {
   IconField,
   ListBlockType,
@@ -123,7 +124,14 @@ export function createHeadingRenderer<
     );
     const headingContent = renderBlocks(rich_text);
     if (!is_toggleable) {
-      return createElement(element, { className: clsHeading }, headingContent);
+      return createElement(
+        element,
+        {
+          id: slugify(richTextToString(rich_text), { strict: true }),
+          className: clsHeading,
+        },
+        headingContent
+      );
     } else {
       return (
         <details>
