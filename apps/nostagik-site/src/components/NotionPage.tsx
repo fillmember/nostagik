@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import { renderBlocks } from 'nostagik';
 import { ReactNode } from 'react';
+import { renderConfig } from './renderConfig';
 
 export default function NotionPageComponent({
   title,
@@ -42,7 +43,7 @@ export default function NotionPageComponent({
         {slotBeforePageTitle}
         <h1 className="text-4xl font-bold mt-8 mb-4 text-slate-950">{title}</h1>
       </header>
-      {renderBlocks(blocks)}
+      {renderBlocks(blocks, renderConfig)}
     </main>
   );
 }

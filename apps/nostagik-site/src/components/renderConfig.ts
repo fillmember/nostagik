@@ -1,3 +1,3 @@
-import { type RenderBlockConfig, resolveConfig } from 'nostagik';
+import { createRenderConfig } from 'nostagik';
 
-export const renderConfig: RenderBlockConfig = resolveConfig({});
+export const renderConfig = createRenderConfig({});
