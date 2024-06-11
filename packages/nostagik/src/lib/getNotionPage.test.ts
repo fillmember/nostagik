@@ -3,8 +3,6 @@ import {
   defaultGetNotionPageOption,
 } from './getNotionPage';
 
-jest.mock('server-only', () => ({}));
-
 describe('getNotionPage', () => {
   describe('config', () => {
     describe('resolveGetNotionPageOption', () => {

@@ -1,5 +1,3 @@
-import 'server-only';
-
 import { glob } from 'fast-glob';
 import { readJsonSync } from 'fs-extra';
 import { dirname, relative } from 'path';

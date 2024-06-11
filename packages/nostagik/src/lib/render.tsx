@@ -1,5 +1,3 @@
-import 'server-only';
-
 import clsx from 'clsx';
 import { get } from 'lodash';
 import { Fragment, cloneElement, createElement, type ReactNode } from 'react';
