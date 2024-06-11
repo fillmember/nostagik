@@ -3,17 +3,17 @@ import { get } from 'lodash';
 import { Fragment, cloneElement, createElement, type ReactNode } from 'react';
 
 import {
-  GetLinkPreviewResult,
-  ListBlockType,
-  LocalBlockType,
-  LocalIconField,
-  LocalImageBlockType,
-  WithChildren,
-  WithReplacedField,
   richTextToString,
+  type GetLinkPreviewResult,
+  type ListBlockType,
+  type LocalBlockType,
+  type LocalIconField,
+  type LocalImageBlockType,
   type RenderConfig,
+  type WithChildren,
+  type WithReplacedField,
 } from '@nostagik/core';
-import {
+import type {
   BookmarkBlockObjectResponse,
   BulletedListItemBlockObjectResponse,
   CalloutBlockObjectResponse,
@@ -33,18 +33,13 @@ import {
   ToggleBlockObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 import slugify from 'slugify';
-
-function blockClsx(
-  ctx: RendererContext,
-  block: { type: string },
-  ...others: clsx.ClassValue[]
-) {
-  return clsx(
-    `${ctx.config.notionBlockClasses.prefix}${block.type}`,
-    ctx.config.notionBlockClasses.map[block.type],
-    ...others
-  );
-}
+import type { RendererContext } from './type';
+import {
+  blockClsx,
+  defineBlockClass,
+  notionAnnotationToClassNames,
+  notionColorToClassNames,
+} from './utils';
 
 export function Icon({
   icon,
@@ -71,38 +66,6 @@ export function Icon({
     default:
       return null;
   }
-}
-
-function notionAnnotationToClassNames(
-  ctx: RendererContext,
-  annotations: RichTextItemResponse['annotations']
-) {
-  return Object.keys(annotations)
-    .map((str) => {
-      const key = str as keyof typeof annotations;
-      if (key === 'color') {
-        return notionColorToClassNames(ctx, annotations.color);
-      }
-      const value = annotations[key];
-      if (value) {
-        return ctx.config.notionAnnotationsClasses[key];
-      }
-      return '';
-    })
-    .join(' ');
-}
-
-function notionColorToClassNames(ctx: RendererContext, input = '') {
-  const inputArr = input.split(' ');
-  const result = clsx(
-    inputArr.map(
-      (item) => `${ctx.config.notionBlockClasses.prefix}annotation-${item}`
-    ),
-    inputArr
-      .map((item) => ctx.config.notionAnnotationsClasses.color[item])
-      .filter(Boolean)
-  );
-  return result;
 }
 
 export function createHeadingRenderer({
@@ -536,16 +499,6 @@ function unimplementedBlockRenderer(
     </div>
   );
 }
-
-function defineBlockClass(ctx: RendererContext, name: string): string {
-  const objectClass = `${ctx.config.notionBlockClasses.prefix}${name}`;
-  return clsx(objectClass, ctx.config.notionBlockClasses.map[name]);
-}
-
-type RendererContext = {
-  parent?: LocalBlockType;
-  config: RenderConfig;
-};
 
 function _renderBlocks(blocks: any[] = [], ctx: RendererContext): ReactNode {
   return blocks.map((block) => {
