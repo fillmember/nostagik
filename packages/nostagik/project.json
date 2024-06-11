@@ -13,10 +13,18 @@
   },
   "tags": [],
   "targets": {
-    "nx-release-publish": {
+    "publish": {
+      "executor": "nx:run-commands",
       "options": {
-        "packageRoot": "dist/packages/core"
-      }
+        "cwd": "dist/packages/core",
+        "command": "npm publish"
+      },
+      "dependsOn": [
+        {
+          "target": "build",
+          "projects": "self"
+        }
+      ]
     }
   }
 }
