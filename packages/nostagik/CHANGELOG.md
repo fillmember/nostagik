@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.0.3](https://github.com/fillmember/nostagik/compare/core-v0.0.2...core-v0.0.3) (2024-06-11)
+
+
+### Features
+
+* **core:** add tailwind-preset.ts ([9727c54](https://github.com/fillmember/nostagik/commit/9727c54e33c35b7da1d306d39026a26a8d03b1bb))
+
+
+### Bug Fixes
+
+* **config:** minor style change to column block ([a38f539](https://github.com/fillmember/nostagik/commit/a38f539c1d692e9c288641eae155c4a01f745f47))
+* **core:** limit child_page__icon size ([b78bda8](https://github.com/fillmember/nostagik/commit/b78bda8497be48a44f9fab9d91abac62d81df1e4))
+
 ## 0.0.2 (2024-06-11)
 
 
