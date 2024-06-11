@@ -1,0 +1,6 @@
+{
+  "packages": {
+    "packages/nostagik": { "release-type": "node" },
+    "packages/react": { "release-type": "node" }
+  }
+}
