@@ -3,7 +3,7 @@ import { createRenderConfig, defaultRenderConfig } from './config';
 describe('config', () => {
   describe('createRenderConfig', () => {
     test('should merge recursively', () => {
-      const input = { notionBlockClasses: { prefix: 'yee-' } };
+      const input = { classPrefix: 'yee-' };
       const output = createRenderConfig(input);
       expect(output.notionAnnotationsClasses).toEqual(
         defaultRenderConfig.notionAnnotationsClasses
