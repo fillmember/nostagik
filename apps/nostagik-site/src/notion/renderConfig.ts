@@ -1,3 +1,3 @@
-import { createRenderConfig } from 'nostagik';
+import { createRenderConfig } from '@nostagik/core';
 
 export const renderConfig = createRenderConfig({});

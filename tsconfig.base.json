@@ -15,7 +15,8 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "nostagik": ["packages/nostagik/src/index.ts"]
+      "@nostagik/core": ["packages/nostagik/src/index.ts"],
+      "@nostagik/react": ["packages/react/src/index.tsx"]
     }
   },
   "exclude": ["node_modules", "tmp"]

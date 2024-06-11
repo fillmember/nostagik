@@ -1,4 +1,4 @@
-import { getNotionPage } from 'nostagik';
+import { getNotionPage } from '@nostagik/core';
 import { notFound } from 'next/navigation';
 import NotionPageComponent from '../notion/NotionPage';
 

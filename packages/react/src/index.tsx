@@ -3,6 +3,17 @@ import { get } from 'lodash';
 import { Fragment, cloneElement, createElement, type ReactNode } from 'react';
 
 import {
+  GetLinkPreviewResult,
+  ListBlockType,
+  LocalBlockType,
+  LocalIconField,
+  LocalImageBlockType,
+  WithChildren,
+  WithReplacedField,
+  richTextToString,
+  type RenderConfig,
+} from '@nostagik/core';
+import {
   BookmarkBlockObjectResponse,
   BulletedListItemBlockObjectResponse,
   CalloutBlockObjectResponse,
@@ -11,9 +22,6 @@ import {
   ColumnBlockObjectResponse,
   ColumnListBlockObjectResponse,
   DividerBlockObjectResponse,
-  Heading1BlockObjectResponse,
-  Heading2BlockObjectResponse,
-  Heading3BlockObjectResponse,
   MentionRichTextItemResponse,
   NumberedListItemBlockObjectResponse,
   ParagraphBlockObjectResponse,
@@ -25,17 +33,6 @@ import {
   ToggleBlockObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 import slugify from 'slugify';
-import {
-  ListBlockType,
-  LocalBlockType,
-  LocalImageBlockType,
-  WithChildren,
-  LocalIconField,
-  WithReplacedField,
-  GetLinkPreviewResult,
-} from './types';
-import { richTextToString } from './utils';
-import { RenderConfig } from './config';
 
 function blockClsx(
   ctx: RendererContext,
@@ -108,23 +105,15 @@ function notionColorToClassNames(ctx: RendererContext, input = '') {
   return result;
 }
 
-export function createHeadingRenderer<
-  T extends
-    | WithChildren<Heading1BlockObjectResponse>
-    | WithChildren<Heading2BlockObjectResponse>
-    | WithChildren<Heading3BlockObjectResponse>
->({
+export function createHeadingRenderer({
   key,
   element,
 }: {
   key: 'heading_1' | 'heading_2' | 'heading_3';
   element: keyof HTMLElementTagNameMap;
 }) {
-  return function HeadingRenderer(block: T, ctx: RendererContext) {
-    const { color, is_toggleable, rich_text } = get(
-      block,
-      key
-    ) as Heading1BlockObjectResponse['heading_1'];
+  return function HeadingRenderer(block: any, ctx: RendererContext) {
+    const { color, is_toggleable, rich_text } = block[key];
     const clsHeading = blockClsx(
       ctx,
       block,
@@ -185,6 +174,7 @@ export const renderers = {
           <img
             className={defineBlockClass(ctx, 'bookmark__preview_image')}
             src={preview.images[0]}
+            alt={preview.title}
           />
         )}
       </a>

@@ -1,5 +1,6 @@
 import clsx from 'clsx';
-import { NotionPageData, renderBlocks } from 'nostagik';
+import { NotionPageData } from '@nostagik/core';
+import { renderBlocks } from '@nostagik/react';
 import { renderConfig } from './renderConfig';
 import { type ReactNode } from 'react';
 import Link from 'next/link';

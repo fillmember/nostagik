@@ -1,6 +1,10 @@
 import { forEach } from 'lodash';
 import { notFound, redirect } from 'next/navigation';
-import { getNotionPage, listStoredPages, type NotionPageData } from 'nostagik';
+import {
+  getNotionPage,
+  listStoredPages,
+  type NotionPageData,
+} from '@nostagik/core';
 import NotionPageComponent from '../../notion/NotionPage';
 import { renderConfig } from '../../notion/renderConfig';
 

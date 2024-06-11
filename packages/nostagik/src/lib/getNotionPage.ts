@@ -33,7 +33,6 @@ export const getNotionPage = async (
     page = await readJSON(pathPageJson);
     cacheAge =
       new Date().getTime() - new Date(page.cache_timestamp as string).getTime();
-    console.log({ cacheAge });
   }
   if (cacheAge > _option.localDataMinimumValidTime * 1000) {
     // source remote data
