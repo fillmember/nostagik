@@ -9,6 +9,7 @@ module.exports = withNx(
     format: ['esm', 'cjs'],
     assets: [{ input: '.', output: '.', glob: '*.md' }],
     external: ['@notionhq/client', 'clsx'],
+    additionalEntryPoints: ['./src/tailwind-preset.ts'],
     generateExportsField: true,
   },
   {
