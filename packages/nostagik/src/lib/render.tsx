@@ -36,7 +36,6 @@ import {
 } from './types';
 import { richTextToString } from './utils';
 import { RenderConfig } from './config';
-import { getLinkPreview } from 'link-preview-js';
 
 function blockClsx(
   ctx: RendererContext,
