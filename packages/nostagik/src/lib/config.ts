@@ -39,7 +39,7 @@ export const defaultRenderConfig: RenderConfig = {
       image_full_width: '!col-start-1 col-span-full [&_figcaption]:mx-4',
       // column
       column_list: 'flex gap-8 my-4',
-      column: 'flex-1',
+      column: 'flex-1 space-y-4',
       // lists
       bulleted_list: 'list-disc ml-6 my-2',
       numbered_list: 'list-decimal ml-6 my-2',
