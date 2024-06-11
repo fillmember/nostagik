@@ -1,5 +1,10 @@
 {
   "name": "@nostagik/react",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fillmember/nostagik",
+    "directory": "packages/react"
+  },
   "version": "0.0.3",
   "dependencies": {
     "@nostagik/core": "^0.0.3",

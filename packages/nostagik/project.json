@@ -17,7 +17,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "dist/packages/core",
-        "command": "npm publish"
+        "command": "npm publish --provenance --access public"
       },
       "dependsOn": [
         {

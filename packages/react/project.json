@@ -10,7 +10,7 @@
       "executor": "nx:run-commands",
       "options": {
         "cwd": "dist/packages/react",
-        "command": "npm publish"
+        "command": "npm publish --provenance --access public"
       },
       "dependsOn": [
         {
