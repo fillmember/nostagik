@@ -1,8 +1,5 @@
 {
-  "release-as": "0.0.2",
-  "prerelease": true,
-  "prerelease-type": "beta",
-  "bump-minor-pre-major": true,
+  "release-as": "0.0.3",
   "packages": {
     "packages/nostagik": { "release-type": "node" },
     "packages/react": { "release-type": "node" }
