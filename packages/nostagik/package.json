@@ -2,11 +2,20 @@
   "name": "@nostagik/core",
   "version": "0.0.1",
   "dependencies": {
-    "tslib": "^2.3.0"
+    "lodash": "^4.17.21",
+    "fs-extra": "^11.2.0",
+    "slugify": "^1.6.6",
+    "image-size": "^1.1.1",
+    "fast-glob": "^3.3.2",
+    "link-preview-js": "^3.0.5"
   },
   "peerDependencies": {
-    "@notionhq/client": "^2.2.15",
-    "clsx": "^2.1.1"
+    "@notionhq/client": "^2.2.15"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.17.4",
+    "@types/fs-extra": "^11.0.4",
+    "@nx/rollup": "^19.2.1"
   },
   "main": "./src/index.js",
   "typings": "./src/index.d.ts"
