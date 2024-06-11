@@ -1,5 +1,6 @@
 import { RichTextItemResponse } from '@notionhq/client/build/src/api-endpoints';
 import { join } from 'path';
+import { GetNotionPageOption } from './types';
 
 /* Convert Notion Data */
 
@@ -9,16 +10,34 @@ export function richTextToString(input: RichTextItemResponse[]): string {
 
 /* Path Management */
 
-export function getCachePath(id: string, filename: string) {
-  return join('./src/data/', id.replace(/-/g, ''), filename);
+export function getCachePath(
+  option: GetNotionPageOption,
+  id: string,
+  filename: string
+) {
+  return join(option.paths.data, id.replace(/-/g, ''), filename);
 }
 
-export function getImagePublicPath(id: string, filename: string) {
-  return join('/cached-images', id, filename);
+export const getPageJsonPath = (option: GetNotionPageOption, id: string) =>
+  getCachePath(option, id, 'page.json');
+
+export const getBlocksJsonPath = (option: GetNotionPageOption, id: string) =>
+  getCachePath(option, id, 'blocks.json');
+
+export function getImagePublicPath(
+  option: GetNotionPageOption,
+  id: string,
+  filename: string
+) {
+  return join(option.paths.imagePublicPath, id, filename);
 }
 
-export function getImageStoragePath(id: string, filename: string) {
-  return join('./public', getImagePublicPath(id, filename));
+export function getImageStoragePath(
+  option: GetNotionPageOption,
+  id: string,
+  filename: string
+) {
+  return join(option.paths.image, id, filename);
 }
 
 /* */

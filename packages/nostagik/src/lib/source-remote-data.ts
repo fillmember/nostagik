@@ -11,13 +11,24 @@ import * as path from 'path';
 import { Client } from '@notionhq/client';
 import type {
   BlockObjectResponse,
+  BookmarkBlockObjectResponse,
+  CalloutBlockObjectResponse,
   ImageBlockObjectResponse,
   PageObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
+import { getLinkPreview } from 'link-preview-js';
 import sizeOf from 'image-size';
-import { get, omit } from 'lodash';
+import { get, merge, omit } from 'lodash';
 import slugify from 'slugify';
-import { LocalBlockType, LocalImageBlockType, TitleProperty } from './types';
+import {
+  GetNotionPageOption,
+  LocalBlockType,
+  LocalCoverField,
+  LocalIconField,
+  LocalImageBlockType,
+  NotionPageData,
+  TitleProperty,
+} from './types';
 import {
   getCachePath,
   getImagePublicPath,
@@ -27,22 +38,28 @@ import {
   uniqueId,
 } from './utils';
 
-export async function fetchNotionPage(pageId: string) {
-  const pageData = await fetchPageData(pageId);
+export async function fetchNotionPage(
+  option: GetNotionPageOption,
+  pageId: string
+) {
+  const pageData = await fetchPageData(option, pageId);
   if (pageData.isCache === false) {
-    await fetchBlocks(pageId);
+    await fetchBlocks(option, pageId);
     return pageData;
   }
   return pageData;
 }
 
-async function fetchPageData(id: string) {
+async function fetchPageData(
+  option: GetNotionPageOption,
+  id: string
+): Promise<{ isCache: boolean; data: Omit<NotionPageData, 'blocks'> }> {
   const STR_CACHE_TIMESTAMP_KEY = 'cache_timestamp';
   const res = (await notion.pages.retrieve({
     page_id: id,
   })) as PageObjectResponse;
   // check cache
-  const filePath = getCachePath(id, 'page.json');
+  const filePath = getCachePath(option, id, 'page.json');
   const localData = readJSONSync(filePath, { throws: false });
   const cacheTimestamp = get(localData, STR_CACHE_TIMESTAMP_KEY, null);
   // compare timestamp
@@ -54,13 +71,12 @@ async function fetchPageData(id: string) {
       (res.properties['title'] as TitleProperty).title
     );
     const data = {
-      cover: await downloadCover(id, res.cover),
-      icon: await downloadIcon(id, res.icon),
+      cover: await downloadCover(option, id, res.cover),
+      icon: await downloadIcon(option, id, res.icon),
       title,
       slug: slugify(title, { lower: true, strict: true }),
       [STR_CACHE_TIMESTAMP_KEY]: new Date().toISOString(),
     };
-
     outputJSONSync(filePath, data);
     return { data, isCache: false };
   }
@@ -72,13 +88,14 @@ const notion = new Client({
 });
 
 async function downloadImage(
+  option: GetNotionPageOption,
   pageId: string,
   externalUrl: string
 ): Promise<Omit<LocalImageBlockType['image'], 'caption'>> {
   externalUrl;
   const urlWithoutQuery = externalUrl.split('?')[0];
   const fileName = path.basename(urlWithoutQuery);
-  const filePath = getImageStoragePath(pageId, fileName);
+  const filePath = getImageStoragePath(option, pageId, fileName);
   if (!pathExistsSync(filePath)) {
     const res = await fetch(externalUrl);
     const buffer = Buffer.from(await res.arrayBuffer());
@@ -89,42 +106,49 @@ async function downloadImage(
   // return
   return {
     type: 'image',
-    url: getImagePublicPath(pageId, fileName),
+    url: getImagePublicPath(option, pageId, fileName),
     dimensions,
   };
 }
 
-async function downloadIcon(pageId: string, icon: PageObjectResponse['icon']) {
+async function downloadIcon(
+  option: GetNotionPageOption,
+  pageId: string,
+  icon: PageObjectResponse['icon']
+): Promise<LocalIconField> {
   if (!icon) return null;
   switch (icon.type) {
     case 'emoji':
-      return { type: icon.type, value: icon.emoji };
+      return { type: icon.type, emoji: icon.emoji };
     case 'file':
-      return await downloadImage(pageId, icon.file.url);
+      return await downloadImage(option, pageId, icon.file.url);
     case 'external':
-      return await downloadImage(pageId, icon.external.url);
+      return await downloadImage(option, pageId, icon.external.url);
   }
 }
 
 async function downloadCover(
+  option: GetNotionPageOption,
   pageId: string,
   cover: PageObjectResponse['cover']
-) {
+): Promise<LocalCoverField> {
   if (!cover) return null;
   switch (cover.type) {
     case 'file':
-      return await downloadImage(pageId, cover.file.url);
+      return await downloadImage(option, pageId, cover.file.url);
     case 'external':
-      return await downloadImage(pageId, cover.external.url);
+      return await downloadImage(option, pageId, cover.external.url);
   }
 }
 
 async function enrichBlocks(
+  option: GetNotionPageOption,
   pageId: string,
   blocks: BlockObjectResponse[]
 ): Promise<LocalBlockType[]> {
   const expandBlock = async (block_id: string) => {
     return await enrichBlocks(
+      option,
       pageId,
       await notion.blocks.children
         .list({ block_id })
@@ -161,6 +185,26 @@ async function enrichBlocks(
       }
       // transform blocks by type
       switch (block.type) {
+        case 'callout': {
+          const calloutBlock = block as CalloutBlockObjectResponse;
+          return merge(block, {
+            callout: {
+              icon: await downloadIcon(
+                option,
+                pageId,
+                calloutBlock.callout.icon
+              ),
+            },
+          });
+        }
+        case 'bookmark': {
+          const bookmarkBlock = block as BookmarkBlockObjectResponse;
+          return merge(block, {
+            bookmark: {
+              preview: await getLinkPreview(bookmarkBlock.bookmark.url),
+            },
+          });
+        }
         case 'image': {
           let newImageData: LocalImageBlockType['image'];
           const imageBlock = block as ImageBlockObjectResponse;
@@ -169,13 +213,21 @@ async function enrichBlocks(
             case 'file':
               newImageData = {
                 caption,
-                ...(await downloadImage(pageId, imageBlock.image.file.url)),
+                ...(await downloadImage(
+                  option,
+                  pageId,
+                  imageBlock.image.file.url
+                )),
               };
               break;
             case 'external':
               newImageData = {
                 caption,
-                ...(await downloadImage(pageId, imageBlock.image.external.url)),
+                ...(await downloadImage(
+                  option,
+                  pageId,
+                  imageBlock.image.external.url
+                )),
               };
               break;
           }
@@ -190,9 +242,9 @@ async function enrichBlocks(
         }
         case 'child_page': {
           const {
-            data: { slug },
-          } = await fetchNotionPage(block.id);
-          return { ...block, slug };
+            data: { slug, icon },
+          } = await fetchNotionPage(option, block.id);
+          return { ...block, slug, icon };
         }
         case 'child_database': {
           // TODO: handle child_database
@@ -236,12 +288,12 @@ function groupListItems(blocks: LocalBlockType[]) {
   return result;
 }
 
-async function fetchBlocks(id: string) {
-  const filePath = getCachePath(id, 'blocks.json');
+async function fetchBlocks(option: GetNotionPageOption, id: string) {
+  const filePath = getCachePath(option, id, 'blocks.json');
   const rawBlocks = await notion.blocks.children
     .list({ block_id: id })
     .then((res) => res.results as BlockObjectResponse[]);
-  const data = await enrichBlocks(id, rawBlocks);
+  const data = await enrichBlocks(option, id, rawBlocks);
   outputJSONSync(filePath, data);
   return { data, isCache: false };
 }

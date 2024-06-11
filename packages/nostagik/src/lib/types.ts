@@ -4,15 +4,62 @@ import type {
 } from '@notionhq/client/build/src/api-endpoints';
 import { ISizeCalculationResult } from 'image-size/dist/types/interface';
 
-export type NotionPageData = {
-  title: string;
-  slug: string;
-  cover?: CoverField;
-  icon?: IconField;
-  blocks: LocalBlockType[];
+/**
+ *  Useful Utility Types
+ */
+
+/**
+ * A type to replace a property of a field in a block to a different type. Used a lot to blocks we modified in the stored version of the data.
+ */
+export type WithReplacedField<
+  Type,
+  Property extends keyof Type,
+  FieldName extends string,
+  NewType
+> = Omit<Type, Property> & {
+  [key in Property]: { [key in FieldName]: NewType } & Omit<
+    Type[Property],
+    FieldName
+  >;
+};
+
+/**
+ * A type to recursively make all properties partial, and not just the root ones
+ */
+export type RecursivePartial<T> = {
+  [P in keyof T]?: T[P] extends (infer U)[]
+    ? RecursivePartial<U>[]
+    : T[P] extends object | undefined
+    ? RecursivePartial<T[P]>
+    : T[P];
 };
 
 export type WithChildren<T, C = unknown> = T & { children: C[] };
+
+/**
+ * NotionPageData Types
+ */
+
+export type NotionPageData = {
+  title: string;
+  slug: string;
+  cover?: LocalCoverField;
+  icon?: LocalIconField;
+  blocks: LocalBlockType[];
+};
+
+export interface GetNotionPageOption {
+  localDataMinimumValidTime: number;
+  paths: {
+    data: string;
+    image: string;
+    imagePublicPath: string;
+  };
+}
+
+/**
+ * Field and Property Types
+ */
 
 export type TitleProperty = {
   type: 'title';
@@ -54,8 +101,13 @@ export type LocalBlockType =
   | LocalImageBlockType
   | ListBlockType;
 
-export type CoverField =
-  | { type: 'image'; url: string; dimensions: ISizeCalculationResult }
+export type LocalCoverField = null | {
+  type: 'image';
+  url: string;
+  dimensions: ISizeCalculationResult;
+};
+
+export type NotionCoverField =
   | {
       type: 'external';
       external: {
@@ -71,8 +123,19 @@ export type CoverField =
     }
   | null;
 
-export type IconField =
-  | { type: 'image'; url: string; dimensions: ISizeCalculationResult }
+export type LocalIconField =
+  | {
+      type: 'image';
+      url: string;
+      dimensions: ISizeCalculationResult;
+    }
+  | {
+      type: 'emoji';
+      emoji: string;
+    }
+  | null;
+
+export type NotionIconField =
   | {
       type: 'emoji';
       emoji: string;
@@ -91,3 +154,28 @@ export type IconField =
       };
     }
   | null;
+
+/**
+ * getLinkPreview return type
+ *
+ * lifted from compiled file of `link-preview-js`
+ */
+
+export type GetLinkPreviewResult = {
+  url?: string;
+  title?: string;
+  siteName?: string;
+  description?: string;
+  mediaType: string;
+  contentType?: string;
+  images?: string[];
+  videos: {
+    url?: string;
+    secureUrl?: string;
+    type?: string;
+    width?: string;
+    height?: string;
+  }[];
+  favicons: string[];
+  charset?: string;
+};

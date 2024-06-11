@@ -28,18 +28,17 @@ import {
 } from '@notionhq/client/build/src/api-endpoints';
 import slugify from 'slugify';
 import {
-  IconField,
   ListBlockType,
   LocalBlockType,
   LocalImageBlockType,
   WithChildren,
+  LocalIconField,
+  WithReplacedField,
+  GetLinkPreviewResult,
 } from './types';
 import { richTextToString } from './utils';
-import {
-  RenderConfig,
-  defaultRenderConfig,
-  createRenderConfig,
-} from './config';
+import { RenderConfig } from './config';
+import { getLinkPreview } from 'link-preview-js';
 
 function blockClsx(
   ctx: RendererContext,
@@ -58,7 +57,7 @@ export function Icon({
   alt,
   className,
 }: {
-  icon: IconField;
+  icon: LocalIconField;
   alt?: string;
   className?: string;
 }) {
@@ -165,19 +164,32 @@ export function createHeadingRenderer<
 
 export const renderers = {
   bookmark: function BookmarkBlock(
-    block: BookmarkBlockObjectResponse,
+    block: WithReplacedField<
+      BookmarkBlockObjectResponse,
+      'bookmark',
+      'preview',
+      GetLinkPreviewResult
+    >,
     ctx: RendererContext
   ) {
+    // return null;
+    const { preview } = block.bookmark;
     return (
-      <a
-        className={blockClsx(
-          ctx,
-          block,
-          ctx.config.notionBlockClasses.map['link']
+      <a className={blockClsx(ctx, block)} href={block.bookmark.url}>
+        <div className={defineBlockClass(ctx, 'bookmark__content')}>
+          {preview.title && (
+            <h5 className={defineBlockClass(ctx, 'bookmark__title')}>
+              {preview.title}
+            </h5>
+          )}
+          {preview.description && <span>{preview.description}</span>}
+        </div>
+        {preview.images && preview.images[0] && (
+          <img
+            className={defineBlockClass(ctx, 'bookmark__preview_image')}
+            src={preview.images[0]}
+          />
         )}
-        href={block.bookmark.url}
-      >
-        {block.bookmark.url}
       </a>
     );
   },
@@ -203,7 +215,12 @@ export const renderers = {
     );
   },
   callout: function CalloutBlock(
-    block: CalloutBlockObjectResponse,
+    block: WithReplacedField<
+      CalloutBlockObjectResponse,
+      'callout',
+      'icon',
+      LocalIconField
+    >,
     ctx: RendererContext
   ) {
     const children = _renderBlocks(block.callout.rich_text, ctx);
@@ -224,7 +241,10 @@ export const renderers = {
     );
   },
   child_page: function ChildPageBlock(
-    block: ChildPageBlockObjectResponse & { slug: string },
+    block: ChildPageBlockObjectResponse & {
+      slug: string;
+      icon: LocalIconField;
+    },
     ctx: RendererContext
   ) {
     return (
@@ -236,6 +256,7 @@ export const renderers = {
         )}
         href={block.slug}
       >
+        <Icon icon={block.icon} className="mr-2" />
         {block.child_page.title}
       </a>
     );
@@ -505,8 +526,6 @@ function unimplementedBlockRenderer(
   block: LocalBlockType,
   ctx?: RendererContext
 ) {
-  const isDev = process.env['NODE_ENV'] === 'development';
-  if (!isDev) return null;
   return (
     <div className="bg-pink-100 p-4 border border-red-200 overflow-auto text-red-600 text-sm space-y-2">
       <h4 className="font-bold">
@@ -549,10 +568,11 @@ function _renderBlocks(blocks: any[] = [], ctx: RendererContext): ReactNode {
       return null;
     }
     const renderer = get(renderers, block.type, unimplementedBlockRenderer);
-    const result = renderer
-      ? renderer(block, ctx)
-      : unimplementedBlockRenderer(block, ctx);
-    if (result === null) return null;
+    const result = renderer ? renderer(block, ctx) : null;
+    if (result === null)
+      return process.env['NODE_ENV'] === 'development'
+        ? unimplementedBlockRenderer(block, ctx)
+        : null;
     return cloneElement(result, { key: block.id });
   });
 }
