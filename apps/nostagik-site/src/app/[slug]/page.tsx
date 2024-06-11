@@ -1,8 +1,8 @@
 import { forEach } from 'lodash';
 import { notFound, redirect } from 'next/navigation';
 import { getNotionPage, listStoredPages, type NotionPageData } from 'nostagik';
-import NotionPageComponent from '../../components/NotionPage';
-import { renderConfig } from '../../components/renderConfig';
+import NotionPageComponent from '../../notion/NotionPage';
+import { renderConfig } from '../../notion/renderConfig';
 
 type Props = { params: { slug: string } };
 

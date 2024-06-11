@@ -8,47 +8,6 @@
 
 .page-layout {
   display: grid;
-  column-gap: 0;
-  grid-template-columns: 1fr min(80ch, calc(100% - 64px)) 1fr;
   grid-column-gap: 32px;
-
-  @apply text-stone-800;
-}
-.page-layout > .page-header {
-  grid-column: 1 / -1;
-}
-.page-layout > :not(.page-header) {
-  grid-column: 2;
-}
-.page-layout > .full {
-  width: 100%;
-  grid-column: 1 / -1;
-}
-.page-cover {
-  width: 100%;
-  grid-column: 1 / -1;
-  min-height: 16rem;
-  height: 25vw;
-  max-height: 22rem;
-  @apply mb-6 overflow-hidden bg-cover bg-center;
-}
-
-/* Nostagik Classes */
-
-.nk-table {
-  @apply border;
-}
-.nk-table tr:not(:last-child) {
-  @apply border-b;
-}
-.nk-table td,
-.nk-table th {
-  @apply p-2;
-}
-.nk-table th {
-  @apply text-left;
-  @apply bg-gray-100;
-}
-.nk-table tr > *:not(:last-child) {
-  @apply border-r;
+  grid-template-columns: 1fr min(80ch, calc(100% - 64px)) 1fr;
 }
