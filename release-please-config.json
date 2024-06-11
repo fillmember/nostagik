@@ -1,5 +1,6 @@
 {
-  "always-bump-patch": true,
+  "prerelease": true,
+  "bump-minor-pre-major": true,
   "packages": {
     "packages/nostagik": { "release-type": "node" },
     "packages/react": { "release-type": "node" }
