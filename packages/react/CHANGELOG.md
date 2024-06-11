@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.3](https://github.com/fillmember/nostagik/compare/react-v0.0.2...react-v0.0.3) (2024-06-11)
+
+
+### Bug Fixes
+
+* **react:** correct built file names ([06c4914](https://github.com/fillmember/nostagik/commit/06c4914df00f24e671c1e571afead9d9be96ee11))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @nostagik/core bumped from ^0.0.2 to ^0.0.3
+
 ## 0.0.2 (2024-06-11)
 
 
