@@ -2,7 +2,7 @@
   "name": "@nostagik/react",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fillmember/nostagik",
+    "url": "git+https://github.com/fillmember/nostagik.git",
     "directory": "packages/react"
   },
   "version": "0.0.3",

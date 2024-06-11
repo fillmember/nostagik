@@ -2,7 +2,7 @@
   "name": "@nostagik/core",
   "repository": {
     "type": "git",
-    "url": "https://github.com/fillmember/nostagik",
+    "url": "git+https://github.com/fillmember/nostagik.git",
     "directory": "packages/nostagik"
   },
   "version": "0.0.3",
