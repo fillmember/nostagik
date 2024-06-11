@@ -1,3 +1,14 @@
+## 0.0.3 (2024-06-11)
+
+
+### 🩹 Fixes
+
+- **core:** correct dist packageRoot ([aa7be14](https://github.com/fillmember/nostagik/commit/aa7be14))
+
+### ❤️  Thank You
+
+- ten @fillmember
+
 ## 0.0.2 (2024-06-11)
 
 
