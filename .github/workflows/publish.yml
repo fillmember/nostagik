@@ -2,13 +2,12 @@ name: Publish Package to npmjs
 on:
   release:
     types: [published]
-
-permissions:
-  id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       # Setup .npmrc file to publish to npm
