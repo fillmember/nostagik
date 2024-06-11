@@ -13,7 +13,7 @@ export async function listStoredPages(
   const _option = resolveGetNotionPageOption(option);
   const pageFiles = await glob(getPageJsonPath(_option, '**'));
   const pairs = pageFiles.map((file) => {
-    const hash = dirname(relative('./src/data', file)).replace(/-/g, '');
+    const hash = dirname(relative(_option.paths.data, file)).replace(/-/g, '');
     const data = readJsonSync(file);
     return { hash, slug: data.slug };
   });
