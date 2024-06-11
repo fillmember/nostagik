@@ -13,16 +13,6 @@
   },
   "tags": [],
   "targets": {
-    "build": {
-      "executor": "@nx/js:tsc",
-      "outputs": ["{options.outputPath}"],
-      "options": {
-        "outputPath": "dist/packages/nostagik",
-        "main": "packages/nostagik/src/index.ts",
-        "tsConfig": "packages/nostagik/tsconfig.lib.json",
-        "assets": ["packages/nostagik/*.md"]
-      }
-    },
     "nx-release-publish": {
       "options": {
         "packageRoot": "dist/{projectRoot}"
