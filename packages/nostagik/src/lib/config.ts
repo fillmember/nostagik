@@ -105,5 +105,5 @@ export const defaultRenderConfig: RenderConfig = {
 export function createRenderConfig(
   config: RecursivePartial<RenderConfig>
 ): RenderConfig {
-  return merge(defaultRenderConfig, config) as RenderConfig;
+  return merge({}, defaultRenderConfig, config) as RenderConfig;
 }

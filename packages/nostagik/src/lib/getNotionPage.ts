@@ -16,7 +16,7 @@ export const defaultGetNotionPageOption: GetNotionPageOption = {
 export function resolveGetNotionPageOption(
   option: RecursivePartial<GetNotionPageOption>
 ): GetNotionPageOption {
-  return merge(defaultGetNotionPageOption, option) as GetNotionPageOption;
+  return merge({}, defaultGetNotionPageOption, option) as GetNotionPageOption;
 }
 
 export const getNotionPage = async (
