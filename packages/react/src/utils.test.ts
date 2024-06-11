@@ -40,4 +40,10 @@ describe('utils', () => {
       )
     ).toBe('aa-text-bold aa-text-underline uuu aa-annotation-brown test-brown');
   });
+  //
+  test('defineBlockClass', () => {
+    expect(
+      utils.defineBlockClass({ config: createRenderConfig({}) }, 'yee')
+    ).toBe('nk-yee');
+  });
 });
