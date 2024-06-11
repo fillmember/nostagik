@@ -63,7 +63,7 @@ export const defaultRenderConfig: RenderConfig = {
       bookmark__title: 'text-base text-gray-700 font-bold mb-2',
       bookmark__preview_image: 'max-h-40 -m-px',
       // child_page
-      child_page: 'group text-stone-600 hover:text-sky-600',
+      child_page: 'block group text-stone-600 hover:text-sky-600 mb-2',
       child_page__icon: 'pr-1.5',
       child_page__name:
         'underline decoration-stone-300 group-hover:decoration-sky-300',
