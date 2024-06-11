@@ -1,4 +1,5 @@
-import { LocalImageBlockType } from './types';
+import { merge } from 'lodash';
+import { LocalImageBlockType, RecursivePartial } from './types';
 
 export type RenderConfig = {
   notionBlockClasses: {
@@ -33,9 +34,9 @@ export const defaultRenderConfig: RenderConfig = {
       heading_3__toggle_children: 'ml-5',
       // image
       image: '',
-      image_img: 'full',
-      image__caption: 'text-sm text-stone-600 mt-2 mb-4',
-      image_full_width: 'full page-layout',
+      image_img: 'col-span-full',
+      image__caption: 'text-sm text-slate-500 mt-2 mb-4',
+      image_full_width: '!col-start-1 col-span-full [&_figcaption]:mx-4',
       // column
       column_list: 'flex gap-8 my-4',
       column: 'flex-1',
@@ -54,6 +55,13 @@ export const defaultRenderConfig: RenderConfig = {
       callout__icon: 'text-xl',
       code: 'p-4 text-sm bg-gray-100',
       divider: 'border-t my-12',
+      table:
+        'border [&_td]:p-2 [&_th]:p-2 [&_th]:text-left [&_th]:bg-gray-100 [&_tr]:border-b [&_tr>*]:border-r',
+      // bookmark
+      bookmark: 'flex justify-between border border-gray-300',
+      bookmark__content: 'p-4 text-gray-500 text-sm',
+      bookmark__title: 'text-base text-gray-700 font-bold mb-2',
+      bookmark__preview_image: 'max-h-40 -m-px',
     },
   },
   notionAnnotationsClasses: {
@@ -85,12 +93,12 @@ export const defaultRenderConfig: RenderConfig = {
   },
   fullWidthImageCondition: (block) => {
     const { width = 0, height = 0 } = block.image.dimensions;
-    return width / height > 3;
+    return width / height > 2.25;
   },
 };
 
 export function createRenderConfig(
-  config: Partial<RenderConfig>
+  config: RecursivePartial<RenderConfig>
 ): RenderConfig {
-  return Object.assign({}, defaultRenderConfig, config) as RenderConfig;
+  return merge(defaultRenderConfig, config) as RenderConfig;
 }
