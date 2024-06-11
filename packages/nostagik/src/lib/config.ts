@@ -2,8 +2,8 @@ import { merge } from 'lodash';
 import { LocalImageBlockType, RecursivePartial } from './types';
 
 export type RenderConfig = {
+  classPrefix: string;
   notionBlockClasses: {
-    prefix: string;
     map: Record<string, string>;
   };
   notionAnnotationsClasses: {
@@ -18,8 +18,8 @@ export type RenderConfig = {
 };
 
 export const defaultRenderConfig: RenderConfig = {
+  classPrefix: 'nk-',
   notionBlockClasses: {
-    prefix: 'nk-',
     map: {
       paragraph: 'text-slate-700',
       // headings
@@ -70,30 +70,30 @@ export const defaultRenderConfig: RenderConfig = {
     },
   },
   notionAnnotationsClasses: {
-    bold: 'nk-text-bold font-bold',
-    italic: 'nk-text-italic italic',
-    strikethrough: 'nk-text-strikethrough line-through',
-    underline: 'nk-text-underline underline',
-    code: 'nk-inline-code font-mono text-slate-700',
+    bold: 'font-bold',
+    italic: 'italic',
+    strikethrough: 'line-through',
+    underline: 'underline',
+    code: 'font-mono text-slate-700',
     color: {
-      blue: 'nk-blue text-blue-700',
-      blue_background: 'nk-blue_background bg-blue-100',
-      brown: 'nk-brown text-brown-700',
-      brown_background: 'nk-brown_background bg-brown-100',
-      gray: 'nk-gray text-gray-700',
-      gray_background: 'nk-gray_background bg-gray-100',
-      green: 'nk-green text-green-700',
-      green_background: 'nk-green_background bg-green-100',
-      orange: 'nk-orange text-orange-700',
-      orange_background: 'nk-orange_background bg-orange-100',
-      pink: 'nk-pink text-pink-700',
-      pink_background: 'nk-pink_background bg-pink-100',
-      purple: 'nk-purple text-purple-700',
-      purple_background: 'nk-purple_background bg-purple-100',
-      red: 'nk-red text-red-700',
-      red_background: 'nk-red_background bg-red-100',
-      yellow: 'nk-yellow text-yellow-700',
-      yellow_background: 'nk-yellow_background bg-yellow-100',
+      blue: 'text-blue-700',
+      blue_background: 'bg-blue-100',
+      brown: 'text-brown-700',
+      brown_background: 'bg-brown-100',
+      gray: 'text-gray-700',
+      gray_background: 'bg-gray-100',
+      green: 'text-green-700',
+      green_background: 'bg-green-100',
+      orange: 'text-orange-700',
+      orange_background: 'bg-orange-100',
+      pink: 'text-pink-100',
+      pink_background: 'bg-pink-100',
+      purple: 'text-purple-700',
+      purple_background: 'bg-purple-100',
+      red: 'text-red-700',
+      red_background: 'bg-red-100',
+      yellow: 'text-yellow-700',
+      yellow_background: 'bg-yellow-100',
     },
   },
   fullWidthImageCondition: (block) => {
