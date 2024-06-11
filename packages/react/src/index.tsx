@@ -235,16 +235,14 @@ export const renderers = {
     ctx: RendererContext
   ) {
     return (
-      <a
-        className={blockClsx(
-          ctx,
-          block,
-          ctx.config.notionBlockClasses.map['link']
-        )}
-        href={block.slug}
-      >
-        <Icon icon={block.icon} className="mr-2" />
-        {block.child_page.title}
+      <a className={blockClsx(ctx, block)} href={block.slug}>
+        <Icon
+          icon={block.icon}
+          className={defineBlockClass(ctx, 'child_page__icon')}
+        />
+        <span className={defineBlockClass(ctx, 'child_page__name')}>
+          {block.child_page.title}
+        </span>
       </a>
     );
   },
