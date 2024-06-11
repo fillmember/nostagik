@@ -1,4 +1,5 @@
 {
+  "release-as": "0.0.2",
   "prerelease": true,
   "prerelease-type": "beta",
   "bump-minor-pre-major": true,
