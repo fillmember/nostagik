@@ -1,10 +1,10 @@
-import clsx from 'clsx';
 import { NotionPageData } from '@nostagik/core';
 import { renderBlocks } from '@nostagik/react';
-import { renderConfig } from './renderConfig';
-import { type ReactNode } from 'react';
-import Link from 'next/link';
+import clsx from 'clsx';
 import Image from 'next/image';
+import Link from 'next/link';
+import { type ReactNode } from 'react';
+import { renderConfig } from './renderConfig';
 
 export default function NotionPageComponent({
   title,
