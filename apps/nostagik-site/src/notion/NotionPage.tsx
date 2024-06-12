@@ -4,7 +4,7 @@ import clsx from 'clsx';
 import Image from 'next/image';
 import Link from 'next/link';
 import { type ReactNode } from 'react';
-import { renderConfig } from './renderConfig';
+import nostagikConfig from './nostagikConfig';
 
 export default function NotionPageComponent({
   title,
@@ -51,7 +51,7 @@ export default function NotionPageComponent({
             </div>
           </header>
           <div className="contents [&>*]:col-start-2 space-y-6">
-            {renderBlocks(blocks, renderConfig)}
+            {renderBlocks(blocks, nostagikConfig)}
           </div>
         </section>
       </div>
@@ -60,13 +60,13 @@ export default function NotionPageComponent({
           <h4 className="font-bold mb-4">Nostagik</h4>
           <nav className="grid gap-2">
             <Link
-              className={renderConfig.notionBlockClasses.map['link']}
+              className={nostagikConfig.notionBlockClasses.map['link']}
               href="/"
             >
               Home
             </Link>
             <a
-              className={renderConfig.notionBlockClasses.map['link']}
+              className={nostagikConfig.notionBlockClasses.map['link']}
               href="https://github.com/fillmember/nostagik"
             >
               GitHub

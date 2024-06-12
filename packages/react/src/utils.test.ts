@@ -1,4 +1,4 @@
-import { createRenderConfig } from '@nostagik/core';
+import { createNostagikConfig } from '@nostagik/core';
 import * as utils from './utils';
 
 describe('utils', () => {
@@ -6,7 +6,7 @@ describe('utils', () => {
     expect(
       utils.blockClsx(
         {
-          config: createRenderConfig({
+          config: createNostagikConfig({
             classPrefix: 'pf-',
             notionBlockClasses: { map: { yee: 'abc' } },
           }),
@@ -20,7 +20,7 @@ describe('utils', () => {
     expect(
       utils.notionAnnotationToClassNames(
         {
-          config: createRenderConfig({
+          config: createNostagikConfig({
             classPrefix: 'aa-',
             notionAnnotationsClasses: {
               bold: '',
@@ -43,7 +43,7 @@ describe('utils', () => {
   //
   test('defineBlockClass', () => {
     expect(
-      utils.defineBlockClass({ config: createRenderConfig({}) }, 'yee')
+      utils.defineBlockClass({ config: createNostagikConfig({}) }, 'yee')
     ).toBe('nk-yee');
   });
 });

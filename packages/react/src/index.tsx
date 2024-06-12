@@ -9,7 +9,7 @@ import {
   type LocalBlockType,
   type LocalIconField,
   type LocalImageBlockType,
-  type RenderConfig,
+  type NostagikConfig,
   type WithChildren,
   type WithReplacedField,
 } from '@nostagik/core';
@@ -505,16 +505,16 @@ function _renderBlocks(blocks: any[] = [], ctx: RendererContext): ReactNode {
     if (block === null) {
       return null;
     }
-    const renderer = get(renderers, block.type, unimplementedBlockRenderer);
+    const renderer = get(renderers, block.type, null);
     const result = renderer ? renderer(block, ctx) : null;
-    if (result === null)
-      return process.env['NODE_ENV'] === 'development'
-        ? unimplementedBlockRenderer(block, ctx)
-        : null;
+    if (process.env['NODE_ENV'] === 'development' && result === null) {
+      return unimplementedBlockRenderer(block, ctx);
+    }
+    if (result === null) return null;
     return cloneElement(result, { key: block.id });
   });
 }
 
-export function renderBlocks(blocks: LocalBlockType[], config: RenderConfig) {
+export function renderBlocks(blocks: LocalBlockType[], config: NostagikConfig) {
   return _renderBlocks(blocks, { config });
 }

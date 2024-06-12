@@ -1,6 +1,6 @@
-import { getNotionPage } from '@nostagik/core';
 import { notFound } from 'next/navigation';
 import NotionPageComponent from '../notion/NotionPage';
+import { getNotionPage } from '../notion/getData';
 
 const pageId = '957d69b81d0d406a967b969f1a88e81f';
 
