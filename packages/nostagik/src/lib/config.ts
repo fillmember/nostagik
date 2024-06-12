@@ -76,7 +76,7 @@ export const defaultNostagikConfig: NostagikConfig = {
     italic: 'italic',
     strikethrough: 'line-through',
     underline: 'underline',
-    code: 'font-mono text-slate-700',
+    code: 'font-mono text-red-600 bg-gray-100 text-sm p-1',
     color: {
       blue: 'text-blue-700',
       blue_background: 'bg-blue-100',
