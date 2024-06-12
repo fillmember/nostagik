@@ -18,3 +18,9 @@ module.exports = {
   },
   plugins: [],
 };
+
+console.log('=======');
+console.log('=======');
+console.log(module.exports.content);
+console.log('=======');
+console.log('=======');
