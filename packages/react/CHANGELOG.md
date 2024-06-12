@@ -1,5 +1,26 @@
 # Changelog
 
+## [0.1.0](https://github.com/fillmember/nostagik/compare/react-v0.0.4...react-v0.1.0) (2024-06-12)
+
+
+### Features
+
+* add default page renderer ([0853d17](https://github.com/fillmember/nostagik/commit/0853d1733cbaeb3ddca280d8b2a370a761517ebb))
+* improve code block style ([8315a94](https://github.com/fillmember/nostagik/commit/8315a9436b48adf5cb00dcec95726932cfba34c5))
+* syntax highlighting via sugar-high ([8ed7d13](https://github.com/fillmember/nostagik/commit/8ed7d1303408967f6abb99c2a0f30fb1f5f83703))
+
+
+### Bug Fixes
+
+* **react:** remove usage of next/image ([0748df6](https://github.com/fillmember/nostagik/commit/0748df6ec6c4cdfe836361d2926685bed80ed0e6))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @nostagik/core bumped from ^0.0.4 to ^0.1.0
+
 ## [0.0.4](https://github.com/fillmember/nostagik/compare/react-v0.0.3...react-v0.0.4) (2024-06-12)
 
 

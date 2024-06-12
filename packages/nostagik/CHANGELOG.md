@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.0](https://github.com/fillmember/nostagik/compare/core-v0.0.4...core-v0.1.0) (2024-06-12)
+
+
+### Features
+
+* add default page renderer ([0853d17](https://github.com/fillmember/nostagik/commit/0853d1733cbaeb3ddca280d8b2a370a761517ebb))
+* improve code block style ([8315a94](https://github.com/fillmember/nostagik/commit/8315a9436b48adf5cb00dcec95726932cfba34c5))
+* syntax highlighting via sugar-high ([8ed7d13](https://github.com/fillmember/nostagik/commit/8ed7d1303408967f6abb99c2a0f30fb1f5f83703))
+
+
+### Bug Fixes
+
+* **core:** correct dependencies and update tests ([05578d4](https://github.com/fillmember/nostagik/commit/05578d4913a728b6c4fc790045c24252a0879b67))
+* **core:** hash url to ensure unique stored image filename ([3fab097](https://github.com/fillmember/nostagik/commit/3fab09758232d1eb3ad2c4d45f957cb38f35259a))
+
 ## [0.0.4](https://github.com/fillmember/nostagik/compare/core-v0.0.3...core-v0.0.4) (2024-06-12)
 
 
