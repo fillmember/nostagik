@@ -1,3 +1,4 @@
+import { createHash } from 'crypto';
 import {
   outputFile,
   outputJSONSync,
@@ -14,8 +15,8 @@ import type {
   ImageBlockObjectResponse,
   PageObjectResponse,
 } from '@notionhq/client/build/src/api-endpoints';
-import { getLinkPreview } from 'link-preview-js';
 import sizeOf from 'image-size';
+import { getLinkPreview } from 'link-preview-js';
 import { get, merge, omit } from 'lodash';
 import slugify from 'slugify';
 import {
@@ -92,7 +93,10 @@ async function downloadImage(
 ): Promise<Omit<LocalImageBlockType['image'], 'caption'>> {
   externalUrl;
   const urlWithoutQuery = externalUrl.split('?')[0];
-  const fileName = path.basename(urlWithoutQuery);
+  const parsed = path.parse(urlWithoutQuery);
+  const hasher = createHash('md5');
+  const hash = hasher.update(externalUrl).digest('hex');
+  const fileName = `${parsed.name}-${hash}${parsed.ext}`;
   const filePath = getImageStoragePath(option, pageId, fileName);
   if (!pathExistsSync(filePath)) {
     const res = await fetch(externalUrl);
