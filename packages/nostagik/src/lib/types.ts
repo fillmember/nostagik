@@ -55,7 +55,7 @@ export interface GetNotionPageOption {
     image: string;
     imagePublicPath: string;
   };
-  notionClientAuthToken: string;
+  notionClientAuthToken?: string;
 }
 
 /**

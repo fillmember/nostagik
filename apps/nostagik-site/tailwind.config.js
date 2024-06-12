@@ -1,8 +1,10 @@
-const { createGlobPatternsForDependencies } = require('@nx/react/tailwind');
-const { join } = require('path');
+import { join } from 'path';
+import { createGlobPatternsForDependencies } from '@nx/react/tailwind';
+import configForNostagik from '@nostagik/core/src/tailwind-preset';
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  presets: [configForNostagik],
   content: [
     join(
       __dirname,

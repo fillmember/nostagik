@@ -5,7 +5,10 @@ import {
 } from '@nostagik/core';
 import nostagikConfig from './nostagikConfig';
 
-const option: Partial<GetNotionPageOption> = {};
+const option: Partial<GetNotionPageOption> = {
+  notionClientAuthToken: process.env['NOTION_TOKEN'],
+  localDataMinimumValidTime: 0,
+};
 
 export const getAllPages = () => getAll(nostagikConfig, option);
 

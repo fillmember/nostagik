@@ -11,6 +11,7 @@ export const defaultGetNotionPageOption: GetNotionPageOption = {
     image: './public/cached-images',
     imagePublicPath: './cached-images',
   },
+  notionClientAuthToken: null,
 };
 
 export function resolveGetNotionPageOption(
