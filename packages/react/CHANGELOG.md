@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.0.4](https://github.com/fillmember/nostagik/compare/react-v0.0.3...react-v0.0.4) (2024-06-12)
+
+
+### Bug Fixes
+
+* more robust getAllPages method ([#4](https://github.com/fillmember/nostagik/issues/4)) ([c31ca6d](https://github.com/fillmember/nostagik/commit/c31ca6d4e75670b2164e51dcd1e6f11aad2810bb))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @nostagik/core bumped from ^0.0.3 to ^0.0.4
+
 ## [0.0.3](https://github.com/fillmember/nostagik/compare/react-v0.0.3...react-v0.0.3) (2024-06-12)
 
 
