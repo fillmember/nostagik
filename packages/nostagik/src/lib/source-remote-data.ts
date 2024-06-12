@@ -7,7 +7,6 @@ import {
 } from 'fs-extra';
 import * as path from 'path';
 
-import { Client } from '@notionhq/client';
 import type {
   BlockObjectResponse,
   BookmarkBlockObjectResponse,
@@ -36,6 +35,7 @@ import {
   richTextToString,
   uniqueId,
 } from './utils';
+import { getNotionClient } from './client';
 
 export async function fetchNotionPage(
   option: GetNotionPageOption,
@@ -54,7 +54,7 @@ async function fetchPageData(
   id: string
 ): Promise<{ isCache: boolean; data: Omit<NotionPageData, 'blocks'> }> {
   const STR_CACHE_TIMESTAMP_KEY = 'cache_timestamp';
-  const res = (await notion.pages.retrieve({
+  const res = (await getNotionClient(option).pages.retrieve({
     page_id: id,
   })) as PageObjectResponse;
   // check cache
@@ -81,10 +81,6 @@ async function fetchPageData(
   }
   return { data: localData, isCache: true };
 }
-
-const notion = new Client({
-  auth: process.env['NOTION_TOKEN'],
-});
 
 async function downloadImage(
   option: GetNotionPageOption,
@@ -152,8 +148,8 @@ async function enrichBlocks(
     return await enrichBlocks(
       option,
       pageId,
-      await notion.blocks.children
-        .list({ block_id })
+      await getNotionClient(option)
+        .blocks.children.list({ block_id })
         .then((res) => res.results as BlockObjectResponse[])
     );
   };
@@ -275,7 +271,7 @@ function groupListItems(blocks: LocalBlockType[]) {
   );
   result = groupItemsBy(
     result,
-    ({ type }) => type === 'numbered_list_item',
+    ({ type }: any) => type === 'numbered_list_item',
     (children) => ({
       id: listId.next().value,
       type: 'numbered_list',
@@ -284,7 +280,7 @@ function groupListItems(blocks: LocalBlockType[]) {
   );
   result = groupItemsBy(
     result,
-    ({ type }) => type === 'to_do',
+    ({ type }: any) => type === 'to_do',
     (children) => ({ id: listId.next().value, type: 'to_do_list', children })
   );
   return result;
@@ -292,8 +288,8 @@ function groupListItems(blocks: LocalBlockType[]) {
 
 async function fetchBlocks(option: GetNotionPageOption, id: string) {
   const filePath = getCachePath(option, id, 'blocks.json');
-  const rawBlocks = await notion.blocks.children
-    .list({ block_id: id })
+  const rawBlocks = await getNotionClient(option)
+    .blocks.children.list({ block_id: id })
     .then((res) => res.results as BlockObjectResponse[]);
   const data = await enrichBlocks(option, id, rawBlocks);
   outputJSONSync(filePath, data);
