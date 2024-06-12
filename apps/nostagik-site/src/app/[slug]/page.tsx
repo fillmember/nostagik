@@ -1,23 +1,20 @@
 import { forEach } from 'lodash';
 import { notFound, redirect } from 'next/navigation';
-import {
-  getNotionPage,
-  listStoredPages,
-  type NotionPageData,
-} from '@nostagik/core';
+import { type NotionPageData } from '@nostagik/core';
 import NotionPageComponent from '../../notion/NotionPage';
-import { renderConfig } from '../../notion/renderConfig';
+import nostagikConfig from '../../notion/nostagikConfig';
+import { getAllPages, getNotionPage } from '../../notion/getData';
 
 type Props = { params: { slug: string } };
 
-export default async function NotionPage({ params: { slug } }: Props) {
-  const { pairs } = await listStoredPages();
+export default async function Page({ params: { slug } }: Props) {
+  const { pairs } = await getAllPages();
   let pageId;
   forEach(pairs, function (pair) {
-    if (slug === pair.hash) {
+    if (slug === pair.id) {
       return redirect(`/${pair.slug}`);
     } else if (slug === pair.slug) {
-      pageId = pair.hash;
+      pageId = pair.id;
     }
   });
   if (!pageId) notFound();
@@ -29,7 +26,7 @@ export default async function NotionPage({ params: { slug } }: Props) {
       {...props}
       slotBeforePageTitle={
         <nav className="mt-8 -mb-4">
-          <a className={renderConfig.notionBlockClasses.map['link']} href="/">
+          <a className={nostagikConfig.notionBlockClasses.map['link']} href="/">
             back to home
           </a>
         </nav>
@@ -39,18 +36,16 @@ export default async function NotionPage({ params: { slug } }: Props) {
 }
 
 export async function generateStaticParams() {
-  const { flat } = await listStoredPages();
+  const { flat } = await getAllPages();
   return flat.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params: { slug } }: Props) {
-  const { pairs } = await listStoredPages();
+  const { pairs } = await getAllPages();
   let pageId;
   forEach(pairs, function (pair) {
-    if (slug === pair.hash) {
-      pageId = pair.hash;
-    } else if (slug === pair.slug) {
-      pageId = pair.hash;
+    if (slug === pair.id || slug === pair.slug) {
+      pageId = pair.id;
     }
   });
   if (!pageId) notFound();

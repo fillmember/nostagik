@@ -1,7 +1,7 @@
 import { merge } from 'lodash';
 import { LocalImageBlockType, RecursivePartial } from './types';
 
-export type RenderConfig = {
+export type NostagikConfig = {
   classPrefix: string;
   notionBlockClasses: {
     map: Record<string, string>;
@@ -15,9 +15,11 @@ export type RenderConfig = {
     color: Record<string, string>;
   };
   fullWidthImageCondition: (block: LocalImageBlockType) => boolean;
+  //
+  pages?: { id: string; path: string }[];
 };
 
-export const defaultRenderConfig: RenderConfig = {
+export const defaultNostagikConfig: NostagikConfig = {
   classPrefix: 'nk-',
   notionBlockClasses: {
     map: {
@@ -61,7 +63,7 @@ export const defaultRenderConfig: RenderConfig = {
       bookmark: 'flex justify-between border border-gray-300',
       bookmark__content: 'p-4 text-gray-500 text-sm',
       bookmark__title: 'text-base text-gray-700 font-bold mb-2',
-      bookmark__preview_image: 'max-h-40 -m-px',
+      bookmark__preview_image: 'max-h-40',
       // child_page
       child_page: 'block group text-stone-600 hover:text-sky-600 mb-2',
       child_page__icon: 'inline-block pr-1.5 max-w-8',
@@ -102,8 +104,8 @@ export const defaultRenderConfig: RenderConfig = {
   },
 };
 
-export function createRenderConfig(
-  config: RecursivePartial<RenderConfig>
-): RenderConfig {
-  return merge({}, defaultRenderConfig, config) as RenderConfig;
+export function createNostagikConfig(
+  config: RecursivePartial<NostagikConfig>
+): NostagikConfig {
+  return merge({}, defaultNostagikConfig, config) as NostagikConfig;
 }

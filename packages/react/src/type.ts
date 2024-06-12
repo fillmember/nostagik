@@ -1,6 +1,6 @@
-import type { LocalBlockType, RenderConfig } from '@nostagik/core';
+import type { LocalBlockType, NostagikConfig } from '@nostagik/core';
 
 export type RendererContext = {
   parent?: LocalBlockType;
-  config: RenderConfig;
+  config: NostagikConfig;
 };
