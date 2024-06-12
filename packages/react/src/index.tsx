@@ -215,7 +215,7 @@ export const renderers = {
   ) {
     return (
       <div className={blockClsx(ctx, block)}>
-        <pre>
+        <pre className={defineBlockClass(ctx, 'code__pre')}>
           <code
             data-language={block.code?.language}
             className={block.code?.language}
@@ -223,7 +223,11 @@ export const renderers = {
             {_renderBlocks(block.code?.rich_text, ctx)}
           </code>
         </pre>
-        <legend>{_renderBlocks(block.code?.caption, ctx)}</legend>
+        {block.code?.caption && (
+          <legend className={defineBlockClass(ctx, 'code__caption')}>
+            {_renderBlocks(block.code?.caption, ctx)}
+          </legend>
+        )}
       </div>
     );
   },

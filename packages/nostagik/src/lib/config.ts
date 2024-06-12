@@ -55,7 +55,9 @@ export const defaultNostagikConfig: NostagikConfig = {
       quote: 'p-4 border bg-gray-50',
       callout: 'flex items-center gap-4 p-4',
       callout__icon: 'text-xl',
-      code: 'p-4 text-sm bg-gray-100',
+      code: 'text-sm',
+      code__pre: 'p-4 font-mono bg-gray-100',
+      code__caption: 'block mt-1 ml-auto text-slate-700',
       divider: 'border-t my-12',
       table:
         'border [&_td]:p-2 [&_th]:p-2 [&_th]:text-left [&_th]:bg-gray-100 [&_tr]:border-b [&_tr>*]:border-r',
