@@ -40,6 +40,7 @@ import {
   notionAnnotationToClassNames,
   notionColorToClassNames,
 } from './utils';
+import { highlight } from 'sugar-high';
 
 export function Icon({
   icon,
@@ -213,15 +214,15 @@ export const renderers = {
     block: CodeBlockObjectResponse,
     ctx: RendererContext
   ) {
+    const code = highlight(richTextToString(block.code?.rich_text));
     return (
       <div className={blockClsx(ctx, block)}>
         <pre className={defineBlockClass(ctx, 'code__pre')}>
           <code
             data-language={block.code?.language}
             className={block.code?.language}
-          >
-            {_renderBlocks(block.code?.rich_text, ctx)}
-          </code>
+            dangerouslySetInnerHTML={{ __html: code }}
+          />
         </pre>
         {block.code?.caption && (
           <legend className={defineBlockClass(ctx, 'code__caption')}>
