@@ -1,4 +1,3 @@
-import { forEach } from 'lodash';
 import { notFound, redirect } from 'next/navigation';
 import { type NotionPageData } from '@nostagik/core';
 import NotionPageComponent from '../../notion/NotionPage';
@@ -10,7 +9,7 @@ type Props = { params: { slug: string } };
 export default async function Page({ params: { slug } }: Props) {
   const { pairs } = await getAllPages();
   let pageId;
-  forEach(pairs, function (pair) {
+  pairs.forEach(function (pair) {
     if (slug === pair.id) {
       return redirect(`/${pair.slug}`);
     } else if (slug === pair.slug) {
@@ -43,7 +42,7 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params: { slug } }: Props) {
   const { pairs } = await getAllPages();
   let pageId;
-  forEach(pairs, function (pair) {
+  pairs.forEach(function (pair) {
     if (slug === pair.id || slug === pair.slug) {
       pageId = pair.id;
     }
