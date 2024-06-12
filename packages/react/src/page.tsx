@@ -1,6 +1,5 @@
 import { NostagikConfig, NotionPageData } from '@nostagik/core';
 import clsx from 'clsx';
-import Image from 'next/image';
 import { type ReactNode } from 'react';
 import { renderBlocks } from '.';
 
@@ -37,7 +36,7 @@ export function DefaultPageRenderer({
             )}
             <div className="col-start-2">
               {icon?.type === 'image' && (
-                <Image
+                <img
                   alt={title}
                   src={icon.url}
                   width={icon.dimensions?.width}
