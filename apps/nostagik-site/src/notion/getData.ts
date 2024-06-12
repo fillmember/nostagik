@@ -10,11 +10,6 @@ const option: Partial<GetNotionPageOption> = {
   localDataMinimumValidTime: 0,
 };
 
-console.log(
-  typeof process.env['NOTION_TOKEN'],
-  process.env['NOTION_TOKEN']?.length
-);
-
 export const getAllPages = () => getAll(nostagikConfig, option);
 
 export const getNotionPage = (id: string) => getOne(id, option);
