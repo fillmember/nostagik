@@ -1,18 +1,21 @@
-import { createRenderConfig, defaultRenderConfig } from './config';
+import {
+  createNostagikConfig,
+  defaultNostagikConfig as defaults,
+} from './config';
 
 describe('config', () => {
-  describe('createRenderConfig', () => {
+  describe('createNostagikConfig', () => {
     test('should merge recursively', () => {
       const input = { classPrefix: 'yee-' };
-      const output = createRenderConfig(input);
+      const output = createNostagikConfig(input);
       expect(output.notionAnnotationsClasses).toEqual(
-        defaultRenderConfig.notionAnnotationsClasses
+        defaults.notionAnnotationsClasses
       );
       expect(output.fullWidthImageCondition).toEqual(
-        defaultRenderConfig.fullWidthImageCondition
+        defaults.fullWidthImageCondition
       );
       expect(output.notionBlockClasses.map).toEqual(
-        defaultRenderConfig.notionBlockClasses.map
+        defaults.notionBlockClasses.map
       );
     });
   });
