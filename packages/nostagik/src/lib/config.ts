@@ -44,7 +44,7 @@ export const defaultNostagikConfig: NostagikConfig = {
       image__caption: 'text-sm text-slate-500 mt-2 mb-4',
       image_full_width: '!col-start-1 col-span-full [&_figcaption]:mx-4',
       // column
-      column_list: 'flex gap-8 my-4',
+      column_list: 'md:flex gap-8 my-4 space-y-8 md:space-y-0',
       column: 'flex-1 space-y-4',
       // lists
       bulleted_list: 'list-disc ml-6 my-2',
