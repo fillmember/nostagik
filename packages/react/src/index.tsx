@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { get } from 'lodash';
+import { get, isFunction, last } from 'lodash';
 import {
   Fragment,
   cloneElement,
@@ -28,6 +28,9 @@ import type {
   ColumnBlockObjectResponse,
   ColumnListBlockObjectResponse,
   DividerBlockObjectResponse,
+  Heading1BlockObjectResponse,
+  Heading2BlockObjectResponse,
+  Heading3BlockObjectResponse,
   MentionRichTextItemResponse,
   NumberedListItemBlockObjectResponse,
   ParagraphBlockObjectResponse,
@@ -477,6 +480,70 @@ export const renderers = {
           {_renderBlocks(block.children, ctx)}
         </div>
       </details>
+    );
+  },
+  table_of_contents: function TOCBlock(_, ctx: RendererContext) {
+    const toc: {
+      type: string;
+      slug: string;
+      rich_text: RichTextItemResponse[];
+    }[] = [];
+    function findHeadings(block: any) {
+      const isHeading = ['heading_1', 'heading_2', 'heading_3'].some(
+        (str) => block.type === str
+      );
+      function lookInChildren() {
+        if (isFunction(block?.children?.forEach)) {
+          block.children.forEach(findHeadings);
+        }
+      }
+      if (!isHeading) return lookInChildren();
+      let rich_text;
+      switch (block.type) {
+        case 'heading_1':
+          rich_text = (block as Heading1BlockObjectResponse).heading_1
+            .rich_text;
+          break;
+        case 'heading_2':
+          rich_text = (block as Heading2BlockObjectResponse).heading_2
+            .rich_text;
+          break;
+        case 'heading_3':
+          rich_text = (block as Heading3BlockObjectResponse).heading_3
+            .rich_text;
+          break;
+        default:
+          break;
+      }
+      if (!rich_text) return lookInChildren();
+      const slug = slugify(richTextToString(rich_text), { strict: true });
+      toc.push({ type: block.type, slug, rich_text });
+      lookInChildren();
+    }
+    ctx.root.forEach(findHeadings);
+    return (
+      <nav className={defineBlockClass(ctx, 'table_of_content')}>
+        <ul className={defineBlockClass(ctx, 'table_of_content__list')}>
+          {toc.map(({ type, slug, rich_text }, index) => {
+            return (
+              <li
+                className={clsx(
+                  defineBlockClass(ctx, 'table_of_content__item'),
+                  defineBlockClass(ctx, `table_of_content__${type}`)
+                )}
+                key={slug}
+              >
+                <a
+                  className={defineBlockClass(ctx, 'table_of_content__link')}
+                  href={`#${slug}`}
+                >
+                  {_renderBlocks(rich_text, ctx)}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </nav>
     );
   },
 };

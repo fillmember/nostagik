@@ -73,6 +73,12 @@ export const defaultNostagikConfig: NostagikConfig = {
       child_page__icon: 'inline-block pr-1.5 max-w-8',
       child_page__name:
         'underline decoration-stone-300 group-hover:decoration-sky-300',
+      // table of content
+      table_of_content: 'text-sm',
+      table_of_content__list: 'inline-block border px-4 py-2 space-y-1.5',
+      table_of_content__link: 'text-gray-700 underline decoration-gray-200',
+      table_of_content__heading_2: 'ml-3',
+      table_of_content__heading_3: 'ml-6',
     },
   },
   notionAnnotationsClasses: {
