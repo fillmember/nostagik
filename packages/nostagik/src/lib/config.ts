@@ -1,5 +1,5 @@
 import { merge } from 'lodash';
-import { LocalImageBlockType, RecursivePartial } from './types';
+import { BlockRenderer, LocalImageBlockType, RecursivePartial } from './types';
 
 export type NostagikConfig = {
   classPrefix: string;
@@ -15,6 +15,8 @@ export type NostagikConfig = {
     color: Record<string, string>;
   };
   fullWidthImageCondition: (block: LocalImageBlockType) => boolean;
+  //
+  blockRenderers?: Record<string, BlockRenderer>;
   //
   pages?: { id: string; path: string }[];
 };

@@ -1,6 +1,12 @@
 import clsx from 'clsx';
 import { get } from 'lodash';
-import { Fragment, cloneElement, createElement, type ReactNode } from 'react';
+import {
+  Fragment,
+  cloneElement,
+  createElement,
+  isValidElement,
+  type ReactNode,
+} from 'react';
 
 import {
   richTextToString,
@@ -494,7 +500,7 @@ function unimplementedBlockRenderer(
         <details>
           <summary>render context</summary>
           <pre className="text-orange-100 bg-red-950 p-2 -mx-2">
-            <code>{JSON.stringify(ctx, null, 2)}</code>
+            <code>{JSON.stringify({ ...ctx, root: undefined }, null, 2)}</code>
           </pre>
         </details>
       )}
@@ -510,16 +516,23 @@ function _renderBlocks(blocks: any[] = [], ctx: RendererContext): ReactNode {
     if (block === null) {
       return null;
     }
-    const renderer = get(renderers, block.type, null);
+    const renderer = get(ctx.renderers, block.type, null);
     const result = renderer ? renderer(block, ctx) : null;
     if (process.env['NODE_ENV'] === 'development' && result === null) {
       return unimplementedBlockRenderer(block, ctx);
     }
     if (result === null) return null;
-    return cloneElement(result, { key: block.id });
+    if (isValidElement(result)) {
+      return cloneElement(result, { key: block.id });
+    }
+    return result;
   });
 }
 
 export function renderBlocks(blocks: LocalBlockType[], config: NostagikConfig) {
-  return _renderBlocks(blocks, { config });
+  return _renderBlocks(blocks, {
+    config,
+    root: blocks,
+    renderers: Object.assign({}, renderers, config.blockRenderers),
+  });
 }

@@ -180,3 +180,9 @@ export type GetLinkPreviewResult = {
   favicons: string[];
   charset?: string;
 };
+
+/**
+ * BlockRenderer
+ */
+// eslint-disable-next-line @typescript-eslint/ban-types
+export type BlockRenderer = Function;
