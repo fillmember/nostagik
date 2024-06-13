@@ -1,3 +1,17 @@
 # Nostagik
 
-Nostagik is a toolkit to pull data from Notion and use it in your Next.js project.
+Build static website with Notion and Next.js
+
+## Installation
+
+```shell
+npm i @nostagik/core @nostagik/react
+```
+
+## Get Started
+
+<https://nostagik.pages.dev/get-started>
+
+## Supported Blocks
+
+<https://nostagik.pages.dev/supported-blocks>
