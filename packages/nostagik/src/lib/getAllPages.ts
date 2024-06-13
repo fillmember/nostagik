@@ -1,21 +1,21 @@
 import { glob } from 'fast-glob';
-import { NostagikConfig } from './config';
+import { readJsonSync } from 'fs-extra';
+import { dirname, relative } from 'path';
+import { NostagikConfig, NostagikConfigPageRecord } from './config';
 import { getNotionPage, resolveGetNotionPageOption } from './getNotionPage';
 import { GetNotionPageOption, RecursivePartial } from './types';
 import { getPageJsonPath } from './utils';
-import { dirname, relative } from 'path';
-import { readJsonSync } from 'fs-extra';
+import { merge } from 'lodash';
 
 export async function getAllPages(
   config: NostagikConfig,
   option: RecursivePartial<GetNotionPageOption> = {}
-): Promise<{
-  pairs: {
+): Promise<
+  ({
     id: string;
     slug: string;
-  }[];
-  flat: string[];
-}> {
+  } & Partial<NostagikConfigPageRecord>)[]
+> {
   // configurations
   const _option = resolveGetNotionPageOption(option);
   const pagesFromConfig = config.pages || [];
@@ -23,11 +23,11 @@ export async function getAllPages(
   await Promise.all(pagesFromConfig.map(({ id }) => getNotionPage(id, option)));
   // check stored pages (should have rather complete, newly pulled data)
   const pageFiles = await glob(getPageJsonPath(_option, '**'));
-  const pairs = pageFiles.map((file) => {
+  const pages = pageFiles.map((file) => {
     const id = dirname(relative(_option.paths.data, file)).replace(/-/g, '');
+    const dataFromConfig = pagesFromConfig.find((item) => item.id === id);
     const data = readJsonSync(file);
-    return { id, slug: data.slug };
+    return merge({ id, slug: data.slug }, dataFromConfig);
   });
-  const flat = pairs.flatMap(({ id, slug }) => [id, slug]);
-  return { pairs, flat };
+  return pages;
 }

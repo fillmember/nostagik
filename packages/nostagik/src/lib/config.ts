@@ -1,6 +1,8 @@
 import { merge } from 'lodash';
 import { BlockRenderer, LocalImageBlockType, RecursivePartial } from './types';
 
+export type NostagikConfigPageRecord = { id: string; path: string };
+
 export type NostagikConfig = {
   classPrefix: string;
   notionBlockClasses: {
@@ -18,7 +20,7 @@ export type NostagikConfig = {
   //
   blockRenderers?: Record<string, BlockRenderer>;
   //
-  pages?: { id: string; path: string }[];
+  pages?: NostagikConfigPageRecord[];
 };
 
 export const defaultNostagikConfig: NostagikConfig = {
