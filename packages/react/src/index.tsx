@@ -37,6 +37,7 @@ import type {
   QuoteBlockObjectResponse,
   RichTextItemResponse,
   TableBlockObjectResponse,
+  TableOfContentsBlockObjectResponse,
   TableRowBlockObjectResponse,
   ToDoBlockObjectResponse,
   ToggleBlockObjectResponse,
@@ -482,7 +483,10 @@ export const renderers = {
       </details>
     );
   },
-  table_of_contents: function TOCBlock(_, ctx: RendererContext) {
+  table_of_contents: function TOCBlock(
+    block: TableOfContentsBlockObjectResponse,
+    ctx: RendererContext
+  ) {
     const toc: {
       type: string;
       slug: string;
