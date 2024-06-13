@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.2.0](https://github.com/fillmember/nostagik/compare/react-v0.1.0...react-v0.2.0) (2024-06-13)
+
+
+### Features
+
+* add table of content block ([0ce70ba](https://github.com/fillmember/nostagik/commit/0ce70ba9f2c53f770e17cbe42ab91263afe31029))
+* pass custom renderers ([8dd407c](https://github.com/fillmember/nostagik/commit/8dd407c5b843f32a85aa416eb7f2b744650b53f5))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @nostagik/core bumped from ^0.1.0 to ^0.2.0
+
 ## [0.1.0](https://github.com/fillmember/nostagik/compare/react-v0.0.4...react-v0.1.0) (2024-06-12)
 
 

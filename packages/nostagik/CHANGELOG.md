@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.2.0](https://github.com/fillmember/nostagik/compare/core-v0.1.0...core-v0.2.0) (2024-06-13)
+
+
+### Features
+
+* add table of content block ([0ce70ba](https://github.com/fillmember/nostagik/commit/0ce70ba9f2c53f770e17cbe42ab91263afe31029))
+* getAllPages only returns array of page objects ([31582a8](https://github.com/fillmember/nostagik/commit/31582a8c26f58a57de9a39ffca2c644da3ede0e7))
+* pass custom renderers ([8dd407c](https://github.com/fillmember/nostagik/commit/8dd407c5b843f32a85aa416eb7f2b744650b53f5))
+* responsive column_list ([c9e10f3](https://github.com/fillmember/nostagik/commit/c9e10f3f9e060f4cac7c2cdc48a06ae8402f52ca))
+
 ## [0.1.0](https://github.com/fillmember/nostagik/compare/core-v0.0.4...core-v0.1.0) (2024-06-12)
 
 
