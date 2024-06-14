@@ -14,9 +14,7 @@ describe('config', () => {
       expect(output.fullWidthImageCondition).toEqual(
         defaults.fullWidthImageCondition
       );
-      expect(output.notionBlockClasses.map).toEqual(
-        defaults.notionBlockClasses.map
-      );
+      expect(output.notionBlockClasses).toEqual(defaults.notionBlockClasses);
     });
   });
 });

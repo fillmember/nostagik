@@ -25,7 +25,7 @@ export default async function Page({ params: { slug } }: Props) {
       {...props}
       slotBeforePageTitle={
         <nav className="mt-8 -mb-4">
-          <a className={nostagikConfig.notionBlockClasses.map['link']} href="/">
+          <a className={nostagikConfig.notionBlockClasses['link']} href="/">
             back to home
           </a>
         </nav>

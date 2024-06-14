@@ -328,7 +328,7 @@ export const renderers = {
           className={blockClsx(
             ctx,
             block,
-            ctx.config.notionBlockClasses.map['link']
+            ctx.config.notionBlockClasses['link']
           )}
           href={block.mention.page.id.replace(/-/g, '')}
         >
@@ -428,7 +428,7 @@ export const renderers = {
     if (href) {
       return (
         <a
-          className={clsx(clsBlock, ctx.config.notionBlockClasses.map['link'])}
+          className={clsx(clsBlock, ctx.config.notionBlockClasses['link'])}
           href={href}
         >
           {content}
