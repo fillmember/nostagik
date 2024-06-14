@@ -21,7 +21,7 @@ jobs:
       - name: Get Package Name From Release
         id: get_pkg_name
         run: |
-          RELEASE_TAG_NAME=$(echo ${{ github.event.release.tag_name }} | cut -d'-' -f1')
+          RELEASE_TAG_NAME=$(echo "${{github.event.release.tag_name}}" | cut -d'-' -f1')
           FULL_PKG_NAME="@nostagik/${RELEASE_TAG_NAME}"
           echo "FULL_PKG_NAME=$FULL_PKG_NAME" >> $GITHUB_OUTPUT
       - name: Publish packages
