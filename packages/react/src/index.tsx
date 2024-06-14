@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { get, isFunction, last } from 'lodash';
+import { get, isFunction } from 'lodash';
 import {
   Fragment,
   cloneElement,
