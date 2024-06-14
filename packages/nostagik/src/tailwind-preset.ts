@@ -12,7 +12,7 @@ const config: Config = {
         '.nostagik-default-page-layout': {
           display: 'grid',
           gridColumnGap: '32px',
-          gridTemplateColumns: '1fr min(65rem, calc(100% - 64px)) 1fr',
+          gridTemplateColumns: '1fr min(55rem, calc(100% - 64px)) 1fr',
         },
       });
       addBase({
