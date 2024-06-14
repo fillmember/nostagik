@@ -8,7 +8,7 @@ describe('utils', () => {
         {
           config: createNostagikConfig({
             classPrefix: 'pf-',
-            notionBlockClasses: { map: { yee: 'abc' } },
+            notionBlockClasses: { yee: 'abc' },
           }),
         },
         { type: 'yee' }
