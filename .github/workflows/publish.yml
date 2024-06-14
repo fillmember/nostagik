@@ -18,8 +18,14 @@ jobs:
       - run: npm ci
       - run: npx nx report
         shell: bash
+      - name: Get Package Name From Release
+        id: get_pkg_name
+        run: |
+          RELEASE_TAG_NAME=$(echo ${{ github.event.release.tag_name }} | cut -d'-' -f1')
+          FULL_PKG_NAME="@nostagik/${RELEASE_TAG_NAME}"
+          echo "FULL_PKG_NAME=$FULL_PKG_NAME" >> $GITHUB_OUTPUT
       - name: Publish packages
-        run: npx nx run-many --target=publish --all
+        run: npx nx run ${{ steps.get_pkg_name.outputs.FULL_PKG_NAME }}:publish
         shell: bash
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
