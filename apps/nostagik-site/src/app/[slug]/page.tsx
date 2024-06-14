@@ -1,8 +1,8 @@
-import { notFound, redirect } from 'next/navigation';
 import { type NotionPageData } from '@nostagik/core';
-import NotionPageComponent from '../../notion/NotionPage';
-import nostagikConfig from '../../notion/nostagikConfig';
+import { DefaultPageRenderer } from '@nostagik/react/src/page';
+import { notFound, redirect } from 'next/navigation';
 import { getAllPages, getNotionPage } from '../../notion/getData';
+import nostagikConfig from '../../notion/nostagikConfig';
 
 type Props = { params: { slug: string } };
 
@@ -21,8 +21,9 @@ export default async function Page({ params: { slug } }: Props) {
   const props = await getNotionPage(pageId);
   if (props === null) notFound();
   return (
-    <NotionPageComponent
+    <DefaultPageRenderer
       {...props}
+      nostagikConfig={nostagikConfig}
       slotBeforePageTitle={
         <nav className="mt-8 -mb-4">
           <a className={nostagikConfig.notionBlockClasses['link']} href="/">
