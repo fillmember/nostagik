@@ -325,11 +325,7 @@ export const renderers = {
     if (type === 'page' && block.href !== null) {
       return (
         <a
-          className={blockClsx(
-            ctx,
-            block,
-            ctx.config.notionBlockClasses['link']
-          )}
+          className={blockClsx(ctx, block, ctx.config.notionBlockClasses?.link)}
           href={block.mention.page.id.replace(/-/g, '')}
         >
           {block.plain_text}
@@ -428,7 +424,7 @@ export const renderers = {
     if (href) {
       return (
         <a
-          className={clsx(clsBlock, ctx.config.notionBlockClasses['link'])}
+          className={clsx(clsBlock, ctx.config.notionBlockClasses?.link)}
           href={href}
         >
           {content}

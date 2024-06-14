@@ -5,7 +5,7 @@ export type NostagikConfigPageRecord = { id: string; path: string };
 
 export type NostagikConfig = {
   classPrefix: string;
-  notionBlockClasses: Record<string, string>;
+  notionBlockClasses: Record<string, string> | null;
   notionAnnotationsClasses: {
     bold: string;
     italic: string;
@@ -13,7 +13,7 @@ export type NostagikConfig = {
     underline: string;
     code: string;
     color: Record<string, string>;
-  };
+  } | null;
   fullWidthImageCondition: (block: LocalImageBlockType) => boolean;
   //
   blockRenderers?: Record<string, BlockRenderer>;

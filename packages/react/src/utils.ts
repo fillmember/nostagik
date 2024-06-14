@@ -10,7 +10,7 @@ export function blockClsx(
 ) {
   return clsx(
     `${ctx.config.classPrefix}${block.type}`,
-    ctx.config.notionBlockClasses[block.type],
+    ctx.config.notionBlockClasses?.[block.type],
     ...others
   );
 }
@@ -29,7 +29,7 @@ export function notionAnnotationToClassNames(
       if (value) {
         return clsx(
           `${ctx.config.classPrefix}text-${key}`,
-          ctx.config.notionAnnotationsClasses[key]
+          ctx.config.notionAnnotationsClasses?.[key]
         );
       }
       return '';
@@ -44,7 +44,7 @@ export function notionColorToClassNames(ctx: RendererContext, input = '') {
       item ? `${ctx.config.classPrefix}annotation-${item}` : null
     ),
     inputArr
-      .map((item) => ctx.config.notionAnnotationsClasses.color[item])
+      .map((item) => ctx.config.notionAnnotationsClasses?.color[item])
       .filter(Boolean)
   );
   return result;
@@ -52,5 +52,5 @@ export function notionColorToClassNames(ctx: RendererContext, input = '') {
 
 export function defineBlockClass(ctx: RendererContext, name: string): string {
   const objectClass = `${ctx.config.classPrefix}${name}`;
-  return clsx(objectClass, ctx.config.notionBlockClasses[name]);
+  return clsx(objectClass, ctx.config.notionBlockClasses?.[name]);
 }

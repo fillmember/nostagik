@@ -16,5 +16,10 @@ describe('config', () => {
       );
       expect(output.notionBlockClasses).toEqual(defaults.notionBlockClasses);
     });
+    test('if notionBlockClasses is null', () => {
+      const input = { notionBlockClasses: null };
+      const output = createNostagikConfig(input);
+      expect(output.notionBlockClasses).toBeNull();
+    });
   });
 });
