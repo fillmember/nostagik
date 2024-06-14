@@ -3,6 +3,8 @@ import { DefaultPageRenderer } from '@nostagik/react/src/page';
 import { notFound, redirect } from 'next/navigation';
 import { getAllPages, getNotionPage } from '../../notion/getData';
 import nostagikConfig from '../../notion/nostagikConfig';
+import { Footer } from '../../components/Footer';
+import { Link } from '../../components/Link';
 
 type Props = { params: { slug: string } };
 
@@ -26,11 +28,15 @@ export default async function Page({ params: { slug } }: Props) {
       nostagikConfig={nostagikConfig}
       slotBeforePageTitle={
         <nav className="mt-8 -mb-4">
-          <a className={nostagikConfig.notionBlockClasses['link']} href="/">
+          <Link
+            className={nostagikConfig.notionBlockClasses?.['link']}
+            href="/"
+          >
             back to home
-          </a>
+          </Link>
         </nav>
       }
+      slotFooter={<Footer />}
     />
   );
 }

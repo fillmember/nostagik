@@ -20,11 +20,11 @@ export function DefaultPageRenderer({
 }: DefaultPageRendererProps) {
   return (
     <main className="flex flex-col min-h-screen">
-      <div className="flex-1">
+      <div className="flex-1 mb-24">
         <section className="nostagik-default-page-layout">
           <header
             className={clsx(
-              'col-span-full nostagik-default-page-layout space-y-6',
+              'col-span-full nostagik-default-page-layout space-y-6 mb-8',
               !cover && 'pt-20'
             )}
           >
