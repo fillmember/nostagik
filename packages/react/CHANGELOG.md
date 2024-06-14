@@ -1,5 +1,30 @@
 # Changelog
 
+## [1.0.0](https://github.com/fillmember/nostagik/compare/react-v0.2.0...react-v1.0.0) (2024-06-14)
+
+
+### ⚠ BREAKING CHANGES
+
+* **core:** change nostagik config shape
+
+### Features
+
+* **core:** change nostagik config shape ([50f8268](https://github.com/fillmember/nostagik/commit/50f8268ce7a5fc886a830eb16485a77eb83779df))
+* **core:** possible to set config props to null ([a48f06c](https://github.com/fillmember/nostagik/commit/a48f06cea0588e2a0676359be80b7795c0859793))
+* improve styling ([f35587f](https://github.com/fillmember/nostagik/commit/f35587f59e97464938dfb6cd85648f042e24f86e))
+
+
+### Bug Fixes
+
+* **react:** remove unused import ([e679ad6](https://github.com/fillmember/nostagik/commit/e679ad6fe529b62bf7b38f64938fab0a57ff0b29))
+
+
+### Dependencies
+
+* The following workspace dependencies were updated
+  * dependencies
+    * @nostagik/core bumped from ^0.2.0 to ^1.0.0
+
 ## [0.2.0](https://github.com/fillmember/nostagik/compare/react-v0.1.0...react-v0.2.0) (2024-06-13)
 
 
