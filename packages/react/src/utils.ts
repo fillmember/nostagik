@@ -10,7 +10,7 @@ export function blockClsx(
 ) {
   return clsx(
     `${ctx.config.classPrefix}${block.type}`,
-    ctx.config.notionBlockClasses.map[block.type],
+    ctx.config.notionBlockClasses[block.type],
     ...others
   );
 }
@@ -52,5 +52,5 @@ export function notionColorToClassNames(ctx: RendererContext, input = '') {
 
 export function defineBlockClass(ctx: RendererContext, name: string): string {
   const objectClass = `${ctx.config.classPrefix}${name}`;
-  return clsx(objectClass, ctx.config.notionBlockClasses.map[name]);
+  return clsx(objectClass, ctx.config.notionBlockClasses[name]);
 }
