@@ -41,11 +41,11 @@ export function DefaultPageRenderer({
                   src={icon.url}
                   width={icon.dimensions?.width}
                   height={icon.dimensions?.height}
-                  className={clsx('w-40 aspect-square mx-0', cover && '-mt-20')}
+                  className={clsx('w-24 aspect-square mx-0', cover && '-mt-20')}
                 />
               )}
               {icon?.type === 'emoji' && (
-                <div className={clsx('text-7xl', cover && '-mt-20')}>
+                <div className={clsx('text-8xl', cover && '-mt-20')}>
                   {icon.emoji}
                 </div>
               )}
