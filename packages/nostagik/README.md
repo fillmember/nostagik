@@ -57,7 +57,7 @@ The following can be configured in the option:
 | ------------------------- | ------ | ------------ | ---------------------------------------- |
 | notionClientAuthToken     | string | **required** | the token used to fetch data from notion |
 | localDataMinimumValidTime | number | 600          | unit: seconds.                           |
-| paths                     | object | ...          | see Customization for more information   |
+| paths                     | object | ...          | see [Customization](https://nostagik.pages.dev/get-started#Configure-data-paths) for more information   |
 
 #### Return Value
 
