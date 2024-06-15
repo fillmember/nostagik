@@ -1,4 +1,4 @@
-![nostagik-logo](https://github.com/fillmember/nostagik/assets/2775290/ff4e4726-f257-4129-989f-d83d66602cf6)
+<img src="https://github.com/fillmember/nostagik/assets/2775290/ff4e4726-f257-4129-989f-d83d66602cf6" width="128" height="128" />
 
 # Nostagik
 
