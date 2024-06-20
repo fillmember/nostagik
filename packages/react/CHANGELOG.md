@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/fillmember/nostagik/compare/react-v1.0.0...react-v1.0.1) (2024-06-15)
+
+
+### Bug Fixes
+
+* **react:** align page icon size between emoji and image ([8a67a6e](https://github.com/fillmember/nostagik/commit/8a67a6e5b52f695f91c3a3854a8ac7c99c91ecdb))
+
 ## [1.0.0](https://github.com/fillmember/nostagik/compare/react-v0.2.0...react-v1.0.0) (2024-06-14)
 
 
